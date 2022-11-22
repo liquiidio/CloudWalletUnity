@@ -1,4 +1,4 @@
-mergeInto(LibraryManager.library, {
+var WcwUnityWebGlPlugin =  {
     $waxCloudWalletWebglState: {
         wax : null,
         OnLogin: null,
@@ -73,4 +73,7 @@ mergeInto(LibraryManager.library, {
         waxCloudWalletWebglState.OnError = callback;
     },
 
-});
+};
+
+autoAddDeps(WcwUnityWebGlPlugin, '$waxCloudWalletWebglState');
+mergeInto(LibraryManager.library, WcwUnityWebGlPlugin);
