@@ -40,7 +40,7 @@ public class TestScript : MonoBehaviour
 
         _initButton.clickable.clicked += () =>
         {
-            WcwWebGl.Initialize();
+            WcwWebGl.Initialize("https://wax.greymass.com");
         };
 
         _loginButton.clickable.clicked += () =>
