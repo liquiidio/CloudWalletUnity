@@ -14,7 +14,7 @@ mergeInto(LibraryManager.library, {
     },
 
     WCWLogin: async function () {
-        if($waxCloudWalletWebglState.Debug){
+        if(waxCloudWalletWebglState.Debug){
             window.alert("Login called");        
         }
 
@@ -27,7 +27,7 @@ mergeInto(LibraryManager.library, {
     },
 
     WCWSign: async function (actionDataJsonString) {
-        if($waxCloudWalletWebglState.Debug){
+        if(waxCloudWalletWebglState.Debug){
             window.alert("Sign called");        
             window.alert(str);
         }
@@ -53,21 +53,21 @@ mergeInto(LibraryManager.library, {
     },
 
     WCWSetOnLogin: function (callback) {
-        if($waxCloudWalletWebglState.Debug){
+        if(waxCloudWalletWebglState.Debug){
             window.alert("WaxSetOnLogin called");        
         }
         waxCloudWalletWebglState.OnLogin = callback;
     },
 
     WCWSetOnSign: function (callback) {
-        if($waxCloudWalletWebglState.Debug){
+        if(waxCloudWalletWebglState.Debug){
             window.alert("WaxSetOnSigned called");        
         }
         waxCloudWalletWebglState.OnSigned = callback;
     },
 
     WCWSetOnError: function (callback) {
-        if($waxCloudWalletWebglState.Debug){
+        if(waxCloudWalletWebglState.Debug){
             window.alert("WaxSetOnError called");        
         }
         waxCloudWalletWebglState.OnError = callback;
