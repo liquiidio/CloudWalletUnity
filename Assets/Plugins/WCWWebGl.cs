@@ -10,6 +10,8 @@ using Action = EosSharp.Core.Api.v1.Action;
 
 public class WCWWebGl : MonoBehaviour
 {
+    public static WCWWebGl Instance { get; private set; }
+
     public class ErrorMessage
     {
         [JsonProperty("message")]
@@ -45,6 +47,20 @@ public class WCWWebGl : MonoBehaviour
 
     [DllImport("__Internal")]
     private static extern void WCWSetOnError(OnErrorCallback onSignCallback);
+
+    private void Awake()
+    {
+        // If there is an instance, and it's not me, delete myself.
+
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     void Start()
     {
@@ -84,7 +100,7 @@ public class WCWWebGl : MonoBehaviour
     }
 
     [MonoPInvokeCallback(typeof(OnLoginCallback))]
-    public void DelegateOnLoginEvent(System.IntPtr msgPtr, int msgSize)
+    public static void DelegateOnLoginEvent(System.IntPtr msgPtr, int msgSize)
     {
         var msg = new byte[msgSize];
         Marshal.Copy(msgPtr, msg, 0, msgSize);
@@ -94,11 +110,11 @@ public class WCWWebGl : MonoBehaviour
 
         var message = Encoding.UTF8.GetString(msg);
         isLoggedIn = true;
-        OnLoggedIn?.Invoke(message);
+        Instance.OnLoggedIn?.Invoke(message);
     }
 
     [MonoPInvokeCallback(typeof(OnSignCallback))]
-    public void DelegateOnSignEvent(System.IntPtr msgPtr, int msgSize)
+    public static void DelegateOnSignEvent(System.IntPtr msgPtr, int msgSize)
     {
         var msg = new byte[msgSize];
         Marshal.Copy(msgPtr, msg, 0, msgSize);
@@ -107,11 +123,11 @@ public class WCWWebGl : MonoBehaviour
             throw new ApplicationException("SignCallback Message is null");
 
         var message = Encoding.UTF8.GetString(msg);
-        OnSigned?.Invoke(message);
+        Instance.OnSigned?.Invoke(message);
     }
 
     [MonoPInvokeCallback(typeof(OnSignCallback))]
-    public void DelegateOnErrorEvent(System.IntPtr msgPtr, int msgSize)
+    public static void DelegateOnErrorEvent(System.IntPtr msgPtr, int msgSize)
     {
         var msg = new byte[msgSize];
         Marshal.Copy(msgPtr, msg, 0, msgSize);
@@ -120,6 +136,6 @@ public class WCWWebGl : MonoBehaviour
             throw new ApplicationException("SignCallback Message is null");
 
         var message = Encoding.UTF8.GetString(msg);
-        OnError?.Invoke(message);
+        Instance.OnError?.Invoke(message);
     }
 }
