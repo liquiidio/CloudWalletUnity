@@ -52,11 +52,18 @@ public class WCWWebGl : MonoBehaviour
 
     public void Sign(Action[] actions)
     {
-        //if (!isInitialized)
-        //if(!isLoggedIn)
+        if (!isInitialized)
+        {
+            Debug.Log("Not initialized");
+            return;
+        }
+
+        if (!isLoggedIn)
+        {
+            Debug.Log("Not Logged in");
+            return;
+        }
         WCWSign(JsonConvert.SerializeObject(actions));
-//        else
-            // Throw NotInitializedException
     }
 
     public void Login()
