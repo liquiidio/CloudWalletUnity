@@ -24,11 +24,11 @@ public class WCWWebGl : MonoBehaviour
 
     public event Action<string> OnError;
 
-    public delegate void OnLoginCallback(System.IntPtr msgPtr, int msgSize);
+    public delegate void OnLoginCallback(System.IntPtr errorPtr);
 
-    public delegate void OnSignCallback(System.IntPtr msgPtr, int msgSize);
+    public delegate void OnSignCallback(System.IntPtr errorPtr);
 
-    public delegate void OnErrorCallback(System.IntPtr msgPtr, int msgSize);
+    public delegate void OnErrorCallback(System.IntPtr errorPtr);
 
     [DllImport("__Internal")]
     private static extern void WCWInit(string rpcAddress);
@@ -100,42 +100,46 @@ public class WCWWebGl : MonoBehaviour
     }
 
     [MonoPInvokeCallback(typeof(OnLoginCallback))]
-    public static void DelegateOnLoginEvent(System.IntPtr msgPtr, int msgSize)
+    public static void DelegateOnLoginEvent(System.IntPtr onLoginPtr)
     {
-        var msg = new byte[msgSize];
-        Marshal.Copy(msgPtr, msg, 0, msgSize);
+        //var msg = new byte[msgSize];
+        //Marshal.Copy(msgPtr, msg, 0, msgSize);
+        var msg = Marshal.PtrToStringAuto(onLoginPtr);
 
-        if (msg.Length == 0)
+        if (msg?.Length == 0)
             throw new ApplicationException("LoginCallback Message is null");
 
-        var message = Encoding.UTF8.GetString(msg);
+        //var message = Encoding.UTF8.GetString(msg);
         isLoggedIn = true;
-        Instance.OnLoggedIn?.Invoke(message);
+        Instance.OnLoggedIn?.Invoke(msg);
     }
 
     [MonoPInvokeCallback(typeof(OnSignCallback))]
-    public static void DelegateOnSignEvent(System.IntPtr msgPtr, int msgSize)
+    public static void DelegateOnSignEvent(System.IntPtr onSignPtr)
     {
-        var msg = new byte[msgSize];
-        Marshal.Copy(msgPtr, msg, 0, msgSize);
+        //var msg = new byte[msgSize];
+        //Marshal.Copy(msgPtr, msg, 0, msgSize);
+        var msg = Marshal.PtrToStringAuto(onSignPtr);
 
-        if (msg.Length == 0)
+        if (msg?.Length == 0)
             throw new ApplicationException("SignCallback Message is null");
 
-        var message = Encoding.UTF8.GetString(msg);
-        Instance.OnSigned?.Invoke(message);
+        //var message = Encoding.UTF8.GetString(msg);
+        Instance.OnSigned?.Invoke(msg);
     }
 
     [MonoPInvokeCallback(typeof(OnSignCallback))]
-    public static void DelegateOnErrorEvent(System.IntPtr msgPtr, int msgSize)
+    public static void DelegateOnErrorEvent(System.IntPtr onErrorPtr)
     {
-        var msg = new byte[msgSize];
-        Marshal.Copy(msgPtr, msg, 0, msgSize);
+        //var msg = new byte[msgSize];
+        //Marshal.Copy(msgPtr, msg, 0, msgSize);
 
-        if (msg.Length == 0)
+        var msg = Marshal.PtrToStringAuto(onErrorPtr);
+
+        if (msg?.Length == 0)
             throw new ApplicationException("SignCallback Message is null");
 
-        var message = Encoding.UTF8.GetString(msg);
-        Instance.OnError?.Invoke(message);
+        //var message = Encoding.UTF8.GetString(msg);
+        Instance.OnError?.Invoke(msg);
     }
 }
