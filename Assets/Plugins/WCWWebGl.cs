@@ -24,11 +24,11 @@ public class WCWWebGl : MonoBehaviour
 
     public event Action<string> OnError;
 
-    public delegate void OnLoginCallback(System.IntPtr errorPtr);
+    public delegate void OnLoginCallback(System.IntPtr onLoginPtr);
 
-    public delegate void OnSignCallback(System.IntPtr errorPtr);
+    public delegate void OnSignCallback(System.IntPtr onSignPtr);
 
-    public delegate void OnErrorCallback(System.IntPtr errorPtr);
+    public delegate void OnErrorCallback(System.IntPtr onErrorPtr);
 
     [DllImport("__Internal")]
     private static extern void WCWInit(string rpcAddress);
@@ -46,7 +46,7 @@ public class WCWWebGl : MonoBehaviour
     private static extern void WCWSetOnSign(OnSignCallback onSignCallback);
 
     [DllImport("__Internal")]
-    private static extern void WCWSetOnError(OnErrorCallback onSignCallback);
+    private static extern void WCWSetOnError(OnErrorCallback onErrorCallback);
 
     private void Awake()
     {
@@ -102,9 +102,11 @@ public class WCWWebGl : MonoBehaviour
     [MonoPInvokeCallback(typeof(OnLoginCallback))]
     public static void DelegateOnLoginEvent(System.IntPtr onLoginPtr)
     {
+        Debug.Log("DelegateOnLoginEvent called");
         //var msg = new byte[msgSize];
         //Marshal.Copy(msgPtr, msg, 0, msgSize);
         var msg = Marshal.PtrToStringAuto(onLoginPtr);
+        Debug.Log(msg);
 
         if (msg?.Length == 0)
             throw new ApplicationException("LoginCallback Message is null");
@@ -117,9 +119,12 @@ public class WCWWebGl : MonoBehaviour
     [MonoPInvokeCallback(typeof(OnSignCallback))]
     public static void DelegateOnSignEvent(System.IntPtr onSignPtr)
     {
+        Debug.Log("DelegateOnSignEvent called");
+
         //var msg = new byte[msgSize];
         //Marshal.Copy(msgPtr, msg, 0, msgSize);
         var msg = Marshal.PtrToStringAuto(onSignPtr);
+        Debug.Log(msg);
 
         if (msg?.Length == 0)
             throw new ApplicationException("SignCallback Message is null");
@@ -128,13 +133,16 @@ public class WCWWebGl : MonoBehaviour
         Instance.OnSigned?.Invoke(msg);
     }
 
-    [MonoPInvokeCallback(typeof(OnSignCallback))]
+    [MonoPInvokeCallback(typeof(OnErrorCallback))]
     public static void DelegateOnErrorEvent(System.IntPtr onErrorPtr)
     {
+        Debug.Log("DelegateOnErrorEvent called");
+
         //var msg = new byte[msgSize];
         //Marshal.Copy(msgPtr, msg, 0, msgSize);
 
         var msg = Marshal.PtrToStringAuto(onErrorPtr);
+        Debug.Log(msg);
 
         if (msg?.Length == 0)
             throw new ApplicationException("SignCallback Message is null");

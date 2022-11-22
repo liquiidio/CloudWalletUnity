@@ -2,7 +2,7 @@ var WcwUnityWebGlPlugin =  {
     $waxCloudWalletWebglState: {
         wax : null,
         OnLogin: null,
-        OnSigned: null,
+        OnSign: null,
         OnError: null,
         Debug: true
     },
@@ -16,7 +16,9 @@ var WcwUnityWebGlPlugin =  {
             waxCloudWalletWebglState.wax = new waxjs.WaxJS({
                 rpcEndpoint: UTF8ToString(rpcAddress)
             });
+            window.alert("Initialized!");        
         } catch(e) {
+            window.alert(e.message);        
             var msg = JSON.stringify({ message: e.message });
 			var length = lengthBytesUTF8(msg) + 1;
 			var buffer = _malloc(length);
@@ -46,9 +48,12 @@ var WcwUnityWebGlPlugin =  {
 			try {
                 window.alert("Module call");        
 				Module.dynCall_vi(waxCloudWalletWebglState.OnLogin, buffer);
+                window.alert("Module called");
 			} finally {
+                window.alert("Freeing Buffer");
 				_free(buffer);
-			}
+                window.alert("Buffer freed");
+            }
         } catch(e) {
 
             window.alert(e.message);        
@@ -129,9 +134,9 @@ var WcwUnityWebGlPlugin =  {
 
     WCWSetOnSign: function (callback) {
         if(waxCloudWalletWebglState.Debug){
-            window.alert("WaxSetOnSigned called");        
+            window.alert("WaxSetOnSign called");        
         }
-        waxCloudWalletWebglState.OnSigned = callback;
+        waxCloudWalletWebglState.OnSign = callback;
     },
 
     WCWSetOnError: function (callback) {
