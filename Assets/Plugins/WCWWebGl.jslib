@@ -8,9 +8,26 @@ var WcwUnityWebGlPlugin =  {
     },
 
     WCWInit: function(rpcAddress){
-        waxCloudWalletWebglState.wax = new waxjs.WaxJS({
-            rpcEndpoint: rpcAddress
-        });
+        if(waxCloudWalletWebglState.Debug){
+            window.alert("init called");        
+        }
+
+        try {
+            waxCloudWalletWebglState.wax = new waxjs.WaxJS({
+                rpcEndpoint: UTF8ToString(rpcAddress)
+            });
+        } catch(e) {
+            var msg = JSON.stringify({ message: e.message });
+			var length = lengthBytesUTF8(msg) + 1;
+			var buffer = _malloc(length);
+			stringToUTF8(msg, buffer, length);
+
+			try {
+				Module.dynCall_vi(waxCloudWalletWebglState.OnError, buffer);
+			} finally {
+				_free(buffer);
+			}
+        }
     },
 
     WCWLogin: async function () {
@@ -20,22 +37,49 @@ var WcwUnityWebGlPlugin =  {
 
         try {
             const userAccount = await wax.login();
-            waxCloudWalletWebglState.OnLogin(JSON.stringify({ account: userAccount }));
+            var msg = JSON.stringify({ account: userAccount });
+			var length = lengthBytesUTF8(msg) + 1;
+			var buffer = _malloc(length);
+			stringToUTF8(msg, buffer, length);
+
+			try {
+				Module.dynCall_vi(waxCloudWalletWebglState.OnLogin, buffer);
+			} finally {
+				_free(buffer);
+			}
         } catch(e) {
-            waxCloudWalletWebglState.OnError(JSON.stringify({ message: e.message }));
+            var msg = JSON.stringify({ message: e.message });
+			var length = lengthBytesUTF8(msg) + 1;
+			var buffer = _malloc(length);
+			stringToUTF8(msg, buffer, length);
+
+			try {
+				Module.dynCall_vi(waxCloudWalletWebglState.OnError, buffer);
+			} finally {
+				_free(buffer);
+			}
         }
     },
 
     WCWSign: async function (actionDataJsonString) {
         if(waxCloudWalletWebglState.Debug){
             window.alert("Sign called");        
-            window.alert(str);
+            window.alert(UTF8ToString(actionDataJsonString));
         }
         if(!wax.api) {
-            waxCloudWalletWebglState.OnError(JSON.stringify({ message: "Login First!" }));
+            var msg = JSON.stringify({ message: "Login First!" });
+			var length = lengthBytesUTF8(msg) + 1;
+			var buffer = _malloc(length);
+			stringToUTF8(msg, buffer, length);
+
+			try {
+				Module.dynCall_vi(waxCloudWalletWebglState.OnError, buffer);
+			} finally {
+				_free(buffer);
+			}
         }
 
-        const actionDataJson = JSON.parse(actionDataJsonString);
+        const actionDataJson = JSON.parse(UTF8ToString(actionDataJsonString));
 
 
         try {
@@ -46,9 +90,28 @@ var WcwUnityWebGlPlugin =  {
                 blocksBehind: 3,
                 expireSeconds: 30
             });
-            waxCloudWalletWebglState.OnSign(JSON.stringify({ message: JSON.stringify(result) }));
+
+            var msg = JSON.stringify({ message: JSON.stringify(result) });
+			var length = lengthBytesUTF8(msg) + 1;
+			var buffer = _malloc(length);
+			stringToUTF8(msg, buffer, length);
+
+			try {
+				Module.dynCall_vi(waxCloudWalletWebglState.OnSign, buffer);
+			} finally {
+				_free(buffer);
+			}
         } catch(e) {
-            waxCloudWalletWebglState.OnError(JSON.stringify({ message: e.message }));
+            var msg = JSON.stringify({ message: e.message });
+			var length = lengthBytesUTF8(msg) + 1;
+			var buffer = _malloc(length);
+			stringToUTF8(msg, buffer, length);
+
+			try {
+				Module.dynCall_vi(waxCloudWalletWebglState.OnError, buffer);
+			} finally {
+				_free(buffer);
+			}
         }
     },
 
