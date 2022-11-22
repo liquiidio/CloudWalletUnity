@@ -37,17 +37,22 @@ var WcwUnityWebGlPlugin =  {
 
         try {
             const userAccount = await wax.login();
+            window.alert(userAccount);        
             var msg = JSON.stringify({ account: userAccount });
 			var length = lengthBytesUTF8(msg) + 1;
 			var buffer = _malloc(length);
 			stringToUTF8(msg, buffer, length);
 
 			try {
+                window.alert("Module call");        
 				Module.dynCall_vi(waxCloudWalletWebglState.OnLogin, buffer);
 			} finally {
 				_free(buffer);
 			}
         } catch(e) {
+
+            window.alert(e.message);        
+
             var msg = JSON.stringify({ message: e.message });
 			var length = lengthBytesUTF8(msg) + 1;
 			var buffer = _malloc(length);
