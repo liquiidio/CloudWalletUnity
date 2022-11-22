@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:VisualElement style="width: auto; align-items: center; justify-content: center; height: 100%;">
-        <ui:Button text="Init" display-tooltip-when-elided="true" />
-        <ui:Button text="Login" display-tooltip-when-elided="true" />
-        <ui:Button text="Sign" display-tooltip-when-elided="true" />
+        <ui:Button text="Init" display-tooltip-when-elided="true" name="init-button" />
+        <ui:Button text="Login" display-tooltip-when-elided="true" name="login-button" />
+        <ui:Button text="Sign" display-tooltip-when-elided="true" name="sign-button" />
     </ui:VisualElement>
 </ui:UXML>

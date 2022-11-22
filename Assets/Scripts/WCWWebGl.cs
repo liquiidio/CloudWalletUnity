@@ -22,11 +22,11 @@ public class WCWWebGl : MonoBehaviour
 
     public event Action<string> OnError;
 
-    public delegate void OnLoginCallback(int instanceId, System.IntPtr msgPtr, int msgSize);
+    public delegate void OnLoginCallback(System.IntPtr msgPtr, int msgSize);
 
-    public delegate void OnSignCallback(int instanceId, System.IntPtr msgPtr, int msgSize);
+    public delegate void OnSignCallback(System.IntPtr msgPtr, int msgSize);
 
-    public delegate void OnErrorCallback(int instanceId, System.IntPtr msgPtr, int msgSize);
+    public delegate void OnErrorCallback(System.IntPtr msgPtr, int msgSize);
 
     [DllImport("__Internal")]
     private static extern void WCWInit(string rpcAddress);
@@ -67,17 +67,17 @@ public class WCWWebGl : MonoBehaviour
     private static bool isInitialized = false;
     private static bool isLoggedIn = false;
 
-    public void Initialize()
+    public void Initialize(string rpcAddress)
     {
         WCWSetOnLogin(DelegateOnLoginEvent);
         WCWSetOnSign(DelegateOnSignEvent);
         WCWSetOnError(DelegateOnErrorEvent);
-        
+        WCWInit(rpcAddress);
         isInitialized = true;
     }
 
     [MonoPInvokeCallback(typeof(OnLoginCallback))]
-    public void DelegateOnLoginEvent(int instanceId, System.IntPtr msgPtr, int msgSize)
+    public void DelegateOnLoginEvent(System.IntPtr msgPtr, int msgSize)
     {
         var msg = new byte[msgSize];
         Marshal.Copy(msgPtr, msg, 0, msgSize);
@@ -91,7 +91,7 @@ public class WCWWebGl : MonoBehaviour
     }
 
     [MonoPInvokeCallback(typeof(OnSignCallback))]
-    public void DelegateOnSignEvent(int instanceId, System.IntPtr msgPtr, int msgSize)
+    public void DelegateOnSignEvent(System.IntPtr msgPtr, int msgSize)
     {
         var msg = new byte[msgSize];
         Marshal.Copy(msgPtr, msg, 0, msgSize);
@@ -104,7 +104,7 @@ public class WCWWebGl : MonoBehaviour
     }
 
     [MonoPInvokeCallback(typeof(OnSignCallback))]
-    public void DelegateOnErrorEvent(int instanceId, System.IntPtr msgPtr, int msgSize)
+    public void DelegateOnErrorEvent(System.IntPtr msgPtr, int msgSize)
     {
         var msg = new byte[msgSize];
         Marshal.Copy(msgPtr, msg, 0, msgSize);
