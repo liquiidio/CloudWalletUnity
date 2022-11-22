@@ -1,6 +1,6 @@
 mergeInto(LibraryManager.library, {
     $waxCloudWalletWebglState: {
-        wax : null.
+        wax : null,
         OnLogin: null,
         OnSigned: null,
         OnError: null,
