@@ -54,9 +54,9 @@ public class TestScript : MonoBehaviour
         };
     }
 
-    private void WcwWebGlOnOnError(string obj)
+    private void WcwWebGlOnOnError(WCWWebGl.ErrorEvent obj)
     {
-        Debug.Log($"OnError {obj}");
+        Debug.Log($"OnError {obj.Message}");
     }
 
     private void WcwWebGlOnOnSigned(string obj)
@@ -64,9 +64,9 @@ public class TestScript : MonoBehaviour
         Debug.Log($"OnSigned {obj}");
     }
 
-    private void WcwWebGlOnOnLoggedIn(string obj)
+    private void WcwWebGlOnOnLoggedIn(WCWWebGl.LoginEvent obj)
     {
-        Debug.Log($"OnLoggedIn {obj}");
+        Debug.Log($"OnLoggedIn {obj.Account}");
     }
 
     // Update is called once per frame
@@ -86,19 +86,15 @@ public class TestScript : MonoBehaviour
         {
             new Action()
             {
-                account = "",
-                authorization = new List<PermissionLevel>()
-                {
-                    new PermissionLevel()
-                    {
-                        actor = "", permission = ""
-                    }
-                },
-                name = "",
+                account = "eosio.token",
+                name = "transfer",
                 data = new Dictionary<string, object>()
                 {
-
-                },
+                    {"from", WCWWebGl.Instance.Account},
+                    {"to", "test1.liq"},
+                    {"quantity", "0.00010000"},
+                    {"memo", "just a test"}
+                }
             }
         });
     }

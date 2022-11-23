@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Runtime.InteropServices;
 using System.Text;
 using AOT;
+using EosSharp.Core.Api.v1;
 using Newtonsoft.Json;
 using Action = EosSharp.Core.Api.v1.Action;
 
@@ -12,17 +13,33 @@ public class WCWWebGl : MonoBehaviour
 {
     public static WCWWebGl Instance { get; private set; }
 
-    public class ErrorMessage
+    private bool isInitialized = false;
+    private bool isLoggedIn = false;
+    public string Account { get; private set; }
+
+    public class ErrorEvent
     {
         [JsonProperty("message")]
         public string Message;
     }
 
-    public event Action<string> OnLoggedIn;
+    public class LoginEvent
+    {
+        [JsonProperty("account")]
+        public string Account;
+    }
+
+    public class SignEvent
+    {
+        [JsonProperty("account")]
+        public string Account;
+    }
+
+    public event Action<LoginEvent> OnLoggedIn;
 
     public event Action<string> OnSigned;
 
-    public event Action<string> OnError;
+    public event Action<ErrorEvent> OnError;
 
     public delegate void OnLoginCallback(System.IntPtr onLoginPtr);
 
@@ -68,17 +85,31 @@ public class WCWWebGl : MonoBehaviour
 
     public void Sign(Action[] actions)
     {
-        if (!isInitialized)
+        if (!Instance.isInitialized)
         {
             Debug.Log("Not initialized");
             return;
         }
 
-        if (!isLoggedIn)
+        if (!Instance.isLoggedIn)
         {
             Debug.Log("Not Logged in");
             return;
         }
+
+        foreach (var action in actions)
+        {
+            action.authorization = new List<PermissionLevel>()
+            {
+                new PermissionLevel()
+                {
+                    actor = Account,
+                    permission = "active"
+                }
+            };
+        }
+
+        // TODO, [JsonIgnore] hex_data in EosSharp.Core.Action
         WCWSign(JsonConvert.SerializeObject(actions));
     }
 
@@ -86,9 +117,6 @@ public class WCWWebGl : MonoBehaviour
     {
         WCWLogin();
     }
-
-    private static bool isInitialized = false;
-    private static bool isLoggedIn = false;
 
     public void Initialize(string rpcAddress)
     {
@@ -111,9 +139,11 @@ public class WCWWebGl : MonoBehaviour
         if (msg?.Length == 0)
             throw new ApplicationException("LoginCallback Message is null");
 
-        //var message = Encoding.UTF8.GetString(msg);
-        isLoggedIn = true;
-        Instance.OnLoggedIn?.Invoke(msg);
+        var loginEvent = JsonConvert.DeserializeObject<LoginEvent>(msg);
+        Instance.Account = loginEvent?.Account;
+        if(loginEvent?.Account != null)
+            Instance.isLoggedIn = true;
+        Instance.OnLoggedIn?.Invoke(loginEvent);
     }
 
     [MonoPInvokeCallback(typeof(OnSignCallback))]
@@ -147,7 +177,9 @@ public class WCWWebGl : MonoBehaviour
         if (msg?.Length == 0)
             throw new ApplicationException("SignCallback Message is null");
 
+        var errorEvent = JsonConvert.DeserializeObject<ErrorEvent>(msg);
+
         //var message = Encoding.UTF8.GetString(msg);
-        Instance.OnError?.Invoke(msg);
+        Instance.OnError?.Invoke(errorEvent);
     }
 }
