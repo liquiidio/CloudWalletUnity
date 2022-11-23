@@ -11,7 +11,7 @@ public class TestScript : MonoBehaviour
 
     internal UIDocument Screen;
 
-    private WCWWebGl WcwWebGl = new WCWWebGl();
+    private WCWWebGl WcwWebGl;
 
     private Button _initButton;
     private Button _loginButton;
@@ -26,6 +26,8 @@ public class TestScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        WcwWebGl = new GameObject(nameof(WCWWebGl)).AddComponent<WCWWebGl>();
+
         //WcwWebGl.Initialize();
         WcwWebGl.OnSigned += WcwWebGlOnOnSigned;
         WcwWebGl.OnLoggedIn += WcwWebGlOnOnLoggedIn;
@@ -82,6 +84,8 @@ public class TestScript : MonoBehaviour
 
     public void Sign()
     {
+        Debug.Log(WCWWebGl.Instance.Account);
+
         WcwWebGl.Sign(new Action[]
         {
             new Action()

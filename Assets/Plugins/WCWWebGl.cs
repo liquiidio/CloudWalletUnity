@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
-using System.Text;
 using AOT;
 using EosSharp.Core.Api.v1;
 using Newtonsoft.Json;
@@ -13,8 +11,8 @@ public class WCWWebGl : MonoBehaviour
 {
     public static WCWWebGl Instance { get; private set; }
 
-    private bool isInitialized = false;
-    private bool isLoggedIn = false;
+    private bool _isInitialized = false;
+    private bool _isLoggedIn = false;
     public string Account { get; private set; }
 
     public class ErrorEvent
@@ -85,13 +83,13 @@ public class WCWWebGl : MonoBehaviour
 
     public void Sign(Action[] actions)
     {
-        if (!Instance.isInitialized)
+        if (!Instance._isInitialized)
         {
             Debug.Log("Not initialized");
             return;
         }
 
-        if (!Instance.isLoggedIn)
+        if (!Instance._isLoggedIn)
         {
             Debug.Log("Not Logged in");
             return;
@@ -124,7 +122,7 @@ public class WCWWebGl : MonoBehaviour
         WCWSetOnSign(DelegateOnSignEvent);
         WCWSetOnError(DelegateOnErrorEvent);
         WCWInit(rpcAddress);
-        isInitialized = true;
+        _isInitialized = true;
     }
 
     [MonoPInvokeCallback(typeof(OnLoginCallback))]
@@ -142,7 +140,7 @@ public class WCWWebGl : MonoBehaviour
         var loginEvent = JsonConvert.DeserializeObject<LoginEvent>(msg);
         Instance.Account = loginEvent?.Account;
         if(loginEvent?.Account != null)
-            Instance.isLoggedIn = true;
+            Instance._isLoggedIn = true;
         Instance.OnLoggedIn?.Invoke(loginEvent);
     }
 

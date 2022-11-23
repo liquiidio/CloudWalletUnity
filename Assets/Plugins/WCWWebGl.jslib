@@ -16,9 +16,14 @@ var WcwUnityWebGlPlugin =  {
             waxCloudWalletWebglState.wax = new waxjs.WaxJS({
                 rpcEndpoint: UTF8ToString(rpcAddress)
             });
-            window.alert("Initialized!");
+            if(waxCloudWalletWebglState.Debug){
+                window.alert("wax Initialized!");
+            }
         } catch(e) {
-            window.alert(e.message);        
+            if(waxCloudWalletWebglState.Debug){
+                window.alert(e.message);
+            }
+
             var msg = JSON.stringify({ message: e.message });
 			var length = lengthBytesUTF8(msg) + 1;
 			var buffer = _malloc(length);
@@ -37,34 +42,31 @@ var WcwUnityWebGlPlugin =  {
             window.alert("Login called");        
         }
 
+        string msg;
+        bool error;
+
         try {
             const userAccount = await waxCloudWalletWebglState.wax.login();
-            window.alert(userAccount);        
-            var msg = JSON.stringify({ account: userAccount });
-			var length = lengthBytesUTF8(msg) + 1;
-			var buffer = _malloc(length);
-			stringToUTF8(msg, buffer, length);
-
-			try {
-				Module.dynCall_vi(waxCloudWalletWebglState.OnLogin, buffer);
-			} finally {
-				_free(buffer);
-            }
-            return;
+            msg = JSON.stringify({ account: userAccount });
         } catch(e) {
+            if(waxCloudWalletWebglState.Debug){
+                window.alert(e.message);
+            }
+            error = true;
+            msg = JSON.stringify({ message: e.message });
+        }
 
-            window.alert(e.message);        
+        var length = lengthBytesUTF8(msg) + 1;
+		var buffer = _malloc(length);
+		stringToUTF8(msg, buffer, length);
 
-            var msg = JSON.stringify({ message: e.message });
-			var length = lengthBytesUTF8(msg) + 1;
-			var buffer = _malloc(length);
-			stringToUTF8(msg, buffer, length);
-
-			try {
-				Module.dynCall_vi(waxCloudWalletWebglState.OnError, buffer);
-			} finally {
-				_free(buffer);
-			}
+		try {
+            if(error)
+	            Module.dynCall_vi(waxCloudWalletWebglState.OnError, buffer);
+            else
+                Module.dynCall_vi(waxCloudWalletWebglState.OnLogin, buffer);
+		} finally {
+			_free(buffer);
         }
     },
 
@@ -73,53 +75,57 @@ var WcwUnityWebGlPlugin =  {
             window.alert("Sign called");        
             window.alert(UTF8ToString(actionDataJsonString));
         }
-        if(!waxCloudWalletWebglState.wax.api) {
-            var msg = JSON.stringify({ message: "Login First!" });
-			var length = lengthBytesUTF8(msg) + 1;
-			var buffer = _malloc(length);
-			stringToUTF8(msg, buffer, length);
 
-			try {
-				Module.dynCall_vi(waxCloudWalletWebglState.OnError, buffer);
-			} finally {
-				_free(buffer);
-			}
+        string msg;
+        bool error;
+
+        if(!waxCloudWalletWebglState.wax.api) {
+            msg = JSON.stringify({ message: "Login First!" });
+            error = true;
         }
 
-        const actionDataJson = JSON.parse(UTF8ToString(actionDataJsonString));
+        if(!error){
+            const actionDataJson = JSON.parse(UTF8ToString(actionDataJsonString));
+            try {
+                const result = await waxCloudWalletWebglState.wax.api.transact({
+                    actions: actionDataJson
+                }, 
+                {
+                    blocksBehind: 3,
+                    expireSeconds: 30
+                });
 
+                var msg = JSON.stringify({ message: JSON.stringify(result) });
+			    var length = lengthBytesUTF8(msg) + 1;
+			    var buffer = _malloc(length);
+			    stringToUTF8(msg, buffer, length);
 
-        try {
-            const result = await waxCloudWalletWebglState.wax.api.transact({
-                actions: actionDataJson
-            }, 
-            {
-                blocksBehind: 3,
-                expireSeconds: 30
-            });
+			    try {
+				    Module.dynCall_vi(waxCloudWalletWebglState.OnSign, buffer);
+			    } finally {
+				    _free(buffer);
+			    }
+                return;
+            } catch(e) {
+                if(waxCloudWalletWebglState.Debug){
+                    window.alert(e.message);
+                }
+                error = true;
+                msg = JSON.stringify({ message: e.message });
+            }
+        }
 
-            var msg = JSON.stringify({ message: JSON.stringify(result) });
-			var length = lengthBytesUTF8(msg) + 1;
-			var buffer = _malloc(length);
-			stringToUTF8(msg, buffer, length);
+        var length = lengthBytesUTF8(msg) + 1;
+		var buffer = _malloc(length);
+		stringToUTF8(msg, buffer, length);
 
-			try {
-				Module.dynCall_vi(waxCloudWalletWebglState.OnSign, buffer);
-			} finally {
-				_free(buffer);
-			}
-            return;
-        } catch(e) {
-            var msg = JSON.stringify({ message: e.message });
-			var length = lengthBytesUTF8(msg) + 1;
-			var buffer = _malloc(length);
-			stringToUTF8(msg, buffer, length);
-
-			try {
-				Module.dynCall_vi(waxCloudWalletWebglState.OnError, buffer);
-			} finally {
-				_free(buffer);
-			}
+		try {
+            if(error)
+	            Module.dynCall_vi(waxCloudWalletWebglState.OnError, buffer);
+            else
+                Module.dynCall_vi(waxCloudWalletWebglState.OnLogin, buffer);
+		} finally {
+			_free(buffer);
         }
     },
 
