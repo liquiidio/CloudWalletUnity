@@ -11,7 +11,7 @@ public class TestScript : MonoBehaviour
 
     internal UIDocument Screen;
 
-    private WCWWebGl WcwWebGl;
+    private WaxCloudWalletPlugin _waxCloudWalletPlugin;
 
     private Button _initButton;
     private Button _loginButton;
@@ -26,23 +26,21 @@ public class TestScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        WcwWebGl = new GameObject(nameof(WCWWebGl)).AddComponent<WCWWebGl>();
+        _waxCloudWalletPlugin = new GameObject(nameof(WaxCloudWalletPlugin)).AddComponent<WaxCloudWalletPlugin>();
 
         //WcwWebGl.Initialize();
-        WcwWebGl.OnSigned += WcwWebGlOnOnSigned;
-        WcwWebGl.OnLoggedIn += WcwWebGlOnOnLoggedIn;
-        WcwWebGl.OnError += WcwWebGlOnOnError;
+        _waxCloudWalletPlugin.OnTransactionSigned += WCWOnTransactionSigned;
+        _waxCloudWalletPlugin.OnLoggedIn += WCWOnLoggedIn;
+        _waxCloudWalletPlugin.OnError += WCWOnError;
 
         _initButton = Root.Q<Button>("init-button");
-
         _loginButton = Root.Q<Button>("login-button");
-
         _signButton = Root.Q<Button>("sign-button");
 
 
         _initButton.clickable.clicked += () =>
         {
-            WcwWebGl.Initialize("https://wax.greymass.com");
+            _waxCloudWalletPlugin.Initialize("https://wax.greymass.com");
         };
 
         _loginButton.clickable.clicked += () =>
@@ -56,17 +54,17 @@ public class TestScript : MonoBehaviour
         };
     }
 
-    private void WcwWebGlOnOnError(WCWWebGl.ErrorEvent obj)
+    private void WCWOnError(WcwErrorEvent obj)
     {
         Debug.Log($"OnError {obj.Message}");
     }
 
-    private void WcwWebGlOnOnSigned(string obj)
+    private void WCWOnTransactionSigned(WcwSignEvent obj)
     {
-        Debug.Log($"OnSigned {obj}");
+        Debug.Log($"OnSigned {obj.Trx}");
     }
 
-    private void WcwWebGlOnOnLoggedIn(WCWWebGl.LoginEvent obj)
+    private void WCWOnLoggedIn(WcwLoginEvent obj)
     {
         Debug.Log($"OnLoggedIn {obj.Account}");
     }
@@ -79,14 +77,14 @@ public class TestScript : MonoBehaviour
 
     public void Login()
     {
-        WcwWebGl.Login();
+        _waxCloudWalletPlugin.Login();
     }
 
     public void Sign()
     {
-        Debug.Log(WCWWebGl.Instance.Account);
+        Debug.Log(_waxCloudWalletPlugin.Account);
 
-        WcwWebGl.Sign(new Action[]
+        _waxCloudWalletPlugin.Sign(new Action[]
         {
             new Action()
             {
@@ -94,7 +92,7 @@ public class TestScript : MonoBehaviour
                 name = "transfer",
                 data = new Dictionary<string, object>()
                 {
-                    {"from", WCWWebGl.Instance.Account},
+                    {"from", _waxCloudWalletPlugin.Account},
                     {"to", "test1.liq"},
                     {"quantity", "0.00010000"},
                     {"memo", "just a test"}

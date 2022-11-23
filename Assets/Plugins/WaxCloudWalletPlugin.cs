@@ -7,37 +7,56 @@ using EosSharp.Core.Api.v1;
 using Newtonsoft.Json;
 using Action = EosSharp.Core.Api.v1.Action;
 
-public class WCWWebGl : MonoBehaviour
+public class WcwErrorEvent
 {
-    public static WCWWebGl Instance { get; private set; }
+    [JsonProperty("message")]
+    public string Message;
+}
+
+public class WcwLoginEvent
+{
+    [JsonProperty("account")]
+    public string Account;
+}
+
+public class WcwSignEvent
+{
+    [JsonProperty("trx")]
+    public string Trx;
+}
+
+public class WaxCloudWalletPlugin : MonoBehaviour
+{
+    private static WaxCloudWalletPlugin _instance;
+
+    public bool IsInitialized => _instance._isInitialized;
+    public bool IsLoggedIn => _instance._isLoggedIn;
+    public string Account => _instance._account;
 
     private bool _isInitialized = false;
     private bool _isLoggedIn = false;
-    public string Account { get; private set; }
+    private string _account;
 
-    public class ErrorEvent
+    private Action<WcwLoginEvent> _onLoggedIn;
+    public Action<WcwLoginEvent> OnLoggedIn
     {
-        [JsonProperty("message")]
-        public string Message;
+        get => _instance._onLoggedIn;
+        set => _instance._onLoggedIn = value;
     }
 
-    public class LoginEvent
+    private Action<WcwSignEvent> _onTransactionSigned;
+    public Action<WcwSignEvent> OnTransactionSigned
     {
-        [JsonProperty("account")]
-        public string Account;
+        get => _instance._onTransactionSigned;
+        set => _instance._onTransactionSigned = value;
     }
 
-    public class SignEvent
+    private Action<WcwErrorEvent> _onError;
+    public Action<WcwErrorEvent> OnError
     {
-        [JsonProperty("account")]
-        public string Account;
+        get => _instance._onError;
+        set => _instance._onError = value;
     }
-
-    public event Action<LoginEvent> OnLoggedIn;
-
-    public event Action<string> OnSigned;
-
-    public event Action<ErrorEvent> OnError;
 
     public delegate void OnLoginCallback(System.IntPtr onLoginPtr);
 
@@ -67,14 +86,20 @@ public class WCWWebGl : MonoBehaviour
     {
         // If there is an instance, and it's not me, delete myself.
 
-        if (Instance != null && Instance != this)
+        if (_instance != null && _instance != this)
         {
             Destroy(this);
         }
         else
         {
-            Instance = this;
+            _instance = this;
         }
+
+    }
+
+    void Update()
+    {
+        DispatchEventQueue();
     }
 
     void Start()
@@ -83,13 +108,13 @@ public class WCWWebGl : MonoBehaviour
 
     public void Sign(Action[] actions)
     {
-        if (!Instance._isInitialized)
+        if (!_instance._isInitialized)
         {
             Debug.Log("Not initialized");
             return;
         }
 
-        if (!Instance._isLoggedIn)
+        if (!_instance._isLoggedIn)
         {
             Debug.Log("Not Logged in");
             return;
@@ -101,7 +126,7 @@ public class WCWWebGl : MonoBehaviour
             {
                 new PermissionLevel()
                 {
-                    actor = Account,
+                    actor = _account,
                     permission = "active"
                 }
             };
@@ -122,26 +147,19 @@ public class WCWWebGl : MonoBehaviour
         WCWSetOnSign(DelegateOnSignEvent);
         WCWSetOnError(DelegateOnErrorEvent);
         WCWInit(rpcAddress);
-        _isInitialized = true;
+        _instance._isInitialized = true;
     }
 
     [MonoPInvokeCallback(typeof(OnLoginCallback))]
     public static void DelegateOnLoginEvent(System.IntPtr onLoginPtr)
     {
         Debug.Log("DelegateOnLoginEvent called");
-        //var msg = new byte[msgSize];
-        //Marshal.Copy(msgPtr, msg, 0, msgSize);
+
         var msg = Marshal.PtrToStringAuto(onLoginPtr);
-        Debug.Log(msg);
-
-        if (msg?.Length == 0)
+        if (msg?.Length == 0 || msg == null)
             throw new ApplicationException("LoginCallback Message is null");
-
-        var loginEvent = JsonConvert.DeserializeObject<LoginEvent>(msg);
-        Instance.Account = loginEvent?.Account;
-        if(loginEvent?.Account != null)
-            Instance._isLoggedIn = true;
-        Instance.OnLoggedIn?.Invoke(loginEvent);
+        
+        _instance._eventList.Add(string.Copy(msg));
     }
 
     [MonoPInvokeCallback(typeof(OnSignCallback))]
@@ -149,16 +167,11 @@ public class WCWWebGl : MonoBehaviour
     {
         Debug.Log("DelegateOnSignEvent called");
 
-        //var msg = new byte[msgSize];
-        //Marshal.Copy(msgPtr, msg, 0, msgSize);
         var msg = Marshal.PtrToStringAuto(onSignPtr);
-        Debug.Log(msg);
-
-        if (msg?.Length == 0)
+        if (msg?.Length == 0 || msg == null)
             throw new ApplicationException("SignCallback Message is null");
-
-        //var message = Encoding.UTF8.GetString(msg);
-        Instance.OnSigned?.Invoke(msg);
+        
+        _instance._eventList.Add(string.Copy(msg));
     }
 
     [MonoPInvokeCallback(typeof(OnErrorCallback))]
@@ -166,18 +179,42 @@ public class WCWWebGl : MonoBehaviour
     {
         Debug.Log("DelegateOnErrorEvent called");
 
-        //var msg = new byte[msgSize];
-        //Marshal.Copy(msgPtr, msg, 0, msgSize);
-
         var msg = Marshal.PtrToStringAuto(onErrorPtr);
-        Debug.Log(msg);
-
-        if (msg?.Length == 0)
+        if (msg?.Length == 0 || msg == null)
             throw new ApplicationException("SignCallback Message is null");
 
-        var errorEvent = JsonConvert.DeserializeObject<ErrorEvent>(msg);
+        _instance._eventList.Add(string.Copy(msg));
+    }
 
-        //var message = Encoding.UTF8.GetString(msg);
-        Instance.OnError?.Invoke(errorEvent);
+    private readonly List<string> _eventList = new List<string>();
+    public void DispatchEventQueue()
+    {
+        var messageListCopy = new List<string>(_instance._eventList);
+
+        foreach (var msg in messageListCopy)
+        {
+            var loginEvent = JsonConvert.DeserializeObject<WcwLoginEvent>(msg);
+            if (!string.IsNullOrEmpty(loginEvent?.Account))
+            {
+                _instance._account = loginEvent?.Account;
+                if (loginEvent?.Account != null)
+                    _instance._isLoggedIn = true;
+                _instance.OnLoggedIn?.Invoke(loginEvent);
+                continue;
+            }
+
+            var errorEvent = JsonConvert.DeserializeObject<WcwErrorEvent>(msg);
+            if (!string.IsNullOrEmpty(errorEvent?.Message))
+            {
+                _instance.OnError?.Invoke(errorEvent);
+                continue;
+            }
+
+            var signEvent = JsonConvert.DeserializeObject<WcwSignEvent>(msg);
+            if (!string.IsNullOrEmpty(signEvent?.Trx))
+            {
+                _instance.OnTransactionSigned.Invoke(signEvent);
+            }
+        }
     }
 }

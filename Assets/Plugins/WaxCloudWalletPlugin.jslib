@@ -42,8 +42,8 @@ var WcwUnityWebGlPlugin =  {
             window.alert("Login called");        
         }
 
-        string msg;
-        bool error;
+        var msg = "";
+        var error = false;
 
         try {
             const userAccount = await waxCloudWalletWebglState.wax.login();
@@ -76,8 +76,8 @@ var WcwUnityWebGlPlugin =  {
             window.alert(UTF8ToString(actionDataJsonString));
         }
 
-        string msg;
-        bool error;
+        var msg = "";
+        var error = false;
 
         if(!waxCloudWalletWebglState.wax.api) {
             msg = JSON.stringify({ message: "Login First!" });
@@ -96,6 +96,7 @@ var WcwUnityWebGlPlugin =  {
                 });
 
                 var msg = JSON.stringify({ message: JSON.stringify(result) });
+				window.alert(msg);
 			    var length = lengthBytesUTF8(msg) + 1;
 			    var buffer = _malloc(length);
 			    stringToUTF8(msg, buffer, length);
