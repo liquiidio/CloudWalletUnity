@@ -94,7 +94,7 @@ public class TestScript : MonoBehaviour
                 {
                     {"from", _waxCloudWalletPlugin.Account},
                     {"to", "test1.liq"},
-                    {"quantity", "0.00010000"},
+                    {"quantity", "0.00010000 WAX"},
                     {"memo", "just a test"}
                 }
             }

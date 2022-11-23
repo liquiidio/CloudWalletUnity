@@ -190,6 +190,7 @@ public class WaxCloudWalletPlugin : MonoBehaviour
     public void DispatchEventQueue()
     {
         var messageListCopy = new List<string>(_instance._eventList);
+        _instance._eventList.Clear();
 
         foreach (var msg in messageListCopy)
         {
