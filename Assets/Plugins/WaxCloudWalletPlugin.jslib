@@ -7,14 +7,17 @@ var WcwUnityWebGlPlugin =  {
         Debug: true
     },
 
-    WCWInit: function(rpcAddress){
+    WCWInit: function(rpcAddress, tryAutoLogin, waxSigningURL, waxAutoSigningURL ){
         if(waxCloudWalletWebglState.Debug){
             console.log("init called");
         }
 
         try {
             waxCloudWalletWebglState.wax = new waxjs.WaxJS({
-                rpcEndpoint: UTF8ToString(rpcAddress)
+                rpcEndpoint: UTF8ToString(rpcAddress),
+                tryAutoLogin: tryAutoLogin != null ? tryAutoLogin : null,
+                waxSigningURL: waxSigningURL != null ? UTF8ToString(waxSigningURL) : null,
+                waxAutoSigningURL: waxAutoSigningURL != null = UTF8ToString(waxAutoSigningURL) : null
             });
             if(waxCloudWalletWebglState.Debug){
                 console.log("wax Initialized!");

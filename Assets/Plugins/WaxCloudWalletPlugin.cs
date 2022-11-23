@@ -65,7 +65,7 @@ public class WaxCloudWalletPlugin : MonoBehaviour
     public delegate void OnErrorCallback(System.IntPtr onErrorPtr);
 
     [DllImport("__Internal")]
-    private static extern void WCWInit(string rpcAddress);
+    private static extern void WCWInit(string rpcAddress, bool tryAutoLogin, string waxSigningURL, string waxAutoSigningURL);
 
     [DllImport("__Internal")]
     private static extern void WCWLogin();
@@ -141,12 +141,12 @@ public class WaxCloudWalletPlugin : MonoBehaviour
         WCWLogin();
     }
 
-    public void Initialize(string rpcAddress)
+    public void Initialize(string rpcAddress, bool tryAutoLogin = false, string waxSigningURL = null, string waxAutoSigningURL = null)
     {
         WCWSetOnLogin(DelegateOnLoginEvent);
         WCWSetOnSign(DelegateOnSignEvent);
         WCWSetOnError(DelegateOnErrorEvent);
-        WCWInit(rpcAddress);
+        WCWInit(rpcAddress, tryAutoLogin, waxSigningURL, waxAutoSigningURL);
         _instance._isInitialized = true;
     }
 
