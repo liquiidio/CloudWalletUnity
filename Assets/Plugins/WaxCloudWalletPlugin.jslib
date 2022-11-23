@@ -9,7 +9,7 @@ var WcwUnityWebGlPlugin =  {
 
     WCWInit: function(rpcAddress){
         if(waxCloudWalletWebglState.Debug){
-            window.alert("init called");
+            console.log("init called");
         }
 
         try {
@@ -17,11 +17,11 @@ var WcwUnityWebGlPlugin =  {
                 rpcEndpoint: UTF8ToString(rpcAddress)
             });
             if(waxCloudWalletWebglState.Debug){
-                window.alert("wax Initialized!");
+                console.log("wax Initialized!");
             }
         } catch(e) {
             if(waxCloudWalletWebglState.Debug){
-                window.alert(e.message);
+                console.log(e.message);
             }
 
             var msg = JSON.stringify({ message: e.message });
@@ -39,7 +39,7 @@ var WcwUnityWebGlPlugin =  {
 
     WCWLogin: async function () {
         if(waxCloudWalletWebglState.Debug){
-            window.alert("Login called");        
+            console.log("Login called");        
         }
 
         var msg = "";
@@ -50,7 +50,7 @@ var WcwUnityWebGlPlugin =  {
             msg = JSON.stringify({ account: userAccount });
         } catch(e) {
             if(waxCloudWalletWebglState.Debug){
-                window.alert(e.message);
+                console.log(e.message);
             }
             error = true;
             msg = JSON.stringify({ message: e.message });
@@ -72,8 +72,8 @@ var WcwUnityWebGlPlugin =  {
 
     WCWSign: async function (actionDataJsonString) {
         if(waxCloudWalletWebglState.Debug){
-            window.alert("Sign called");        
-            window.alert(UTF8ToString(actionDataJsonString));
+            console.log("Sign called");        
+            console.log(UTF8ToString(actionDataJsonString));
         }
 
         var msg = "";
@@ -96,7 +96,7 @@ var WcwUnityWebGlPlugin =  {
                 });
 
                 var msg = JSON.stringify({ message: JSON.stringify(result) });
-				window.alert(msg);
+				console.log(msg);
 			    var length = lengthBytesUTF8(msg) + 1;
 			    var buffer = _malloc(length);
 			    stringToUTF8(msg, buffer, length);
@@ -109,7 +109,7 @@ var WcwUnityWebGlPlugin =  {
                 return;
             } catch(e) {
                 if(waxCloudWalletWebglState.Debug){
-                    window.alert(e.message);
+                    console.log(e.message);
                 }
                 error = true;
                 msg = JSON.stringify({ message: e.message });
@@ -132,21 +132,21 @@ var WcwUnityWebGlPlugin =  {
 
     WCWSetOnLogin: function (callback) {
         if(waxCloudWalletWebglState.Debug){
-            window.alert("WaxSetOnLogin called");        
+            console.log("WaxSetOnLogin called");        
         }
         waxCloudWalletWebglState.OnLogin = callback;
     },
 
     WCWSetOnSign: function (callback) {
         if(waxCloudWalletWebglState.Debug){
-            window.alert("WaxSetOnSign called");        
+            console.log("WaxSetOnSign called");        
         }
         waxCloudWalletWebglState.OnSign = callback;
     },
 
     WCWSetOnError: function (callback) {
         if(waxCloudWalletWebglState.Debug){
-            window.alert("WaxSetOnError called");        
+            console.log("WaxSetOnError called");        
         }
         waxCloudWalletWebglState.OnError = callback;
     },
