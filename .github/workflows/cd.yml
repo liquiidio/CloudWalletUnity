@@ -21,7 +21,6 @@ jobs:
         git config --global user.name 'github-bot'
         git config --global user.email 'github-bot@users.noreply.github.com'
         git checkout -b upm                                            # checkout the branch
-        git commit -am "upm update"
         git push -u origin upm --force                              # commit the branch
 
   release:
@@ -40,4 +39,3 @@ jobs:
           name: Release ${{ env.VERSION }}
           body: ${{ env.VERSION }}
 
-          
