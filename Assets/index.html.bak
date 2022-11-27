@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<script src='waxjs.js'></script>
+
+<title>waxjsmobile  demo</title>
+
+<body>
+
+<h1>wax unity mobile demo and tester</h1>
+
+<script>
+   const wax = new waxjs.WaxJS({
+     rpcEndpoint: 'https://wax.greymass.com',
+     tryAutoLogin: true,
+     /*waxSigningURL: 'http://all-access.wax.test:8113',*/
+     /*waxAutoSigningURL: 'http://idm.wax.test:8113/v1/accounts/auto-accept/'*/
+   });
+   const debug = false;
+
+	document.addEventListener('DOMContentLoaded', async function() {
+		var hash = window.location.hash;
+		
+		if(debug)
+			window.alert(window.location);
+		
+		if(hash.length > 0){
+			if(hash.startsWith("#login")){
+				if(debug)
+					window.alert("login");
+				try {
+					var preflightResult = await localPreflight();
+					if(preflightResult.ok){
+						const userAccount = await wax.login();
+						await localCallback(JSON.stringify({ account: userAccount }), "onlogin");
+					}
+					else{
+						await localCallback(JSON.stringify({ message: "preflight failed" }), "onerror");					
+					}
+				} catch(e) {
+					await localCallback(JSON.stringify({ message: e.message }), "onerror");
+				}		
+				window.close();
+			}
+			else if(hash.startsWith("#sign")){
+				if(debug)
+					window.alert("sign");
+				const userAccount = await wax.login();
+				if(!wax.api) {
+					await localCallback(JSON.stringify({ message: "User must Login first" }), "onerror");
+					return;
+				}
+
+				try {
+					var preflightResult = await localPreflight();
+					if(preflightResult.ok){
+						const actionDataJson = JSON.parse(hash.substring(5).replaceAll('%22','"').replaceAll('%20',' '));
+						const result = await wax.api.transact({
+							actions: actionDataJson
+						}, 
+						{
+							blocksBehind: 3,
+							expireSeconds: 30
+						});
+						await localCallback(JSON.stringify({ result: JSON.stringify(result)}), "onsigned");
+					}
+					else{
+						await localCallback(JSON.stringify({ message: "preflight failed" }), "onerror");					
+					}
+
+				} catch(e) {
+					await localCallback(JSON.stringify({message: e.message}), "onerror");
+				}
+				window.close();
+			}
+		}
+	}, false);
+
+	async function localCallback(content, path){
+		if(debug)
+			window.alert("callback to " + path);
+		const response = await fetch("http://127.0.0.1:1234/"+path, {
+		method: 'POST',
+		headers: {
+		  'Accept': 'application/json',
+		  'Content-Type': 'application/json'
+		},
+		body: content,
+		});
+	}
+		
+	async function localPreflight(){
+		if(debug)
+			window.alert("preflight");
+		const response = await fetch("http://127.0.0.1:1234/preflight", {
+		method: 'GET',
+		headers: {
+		  'Accept': 'application/json',
+		  'Content-Type': 'application/json'
+		},
+		});
+		return response.json();
+	}
+</script>
+</body>
+</html>

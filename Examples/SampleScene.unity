@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748171, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -311,7 +311,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1396521070}
   - component: {fileID: 1396521072}
-  - component: {fileID: 1396521071}
+  - component: {fileID: 1396521073}
   m_Layer: 0
   m_Name: WcwExample
   m_TagString: Untagged
@@ -334,18 +334,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1396521071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1396521069}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8f811fb7efcadb4b84487426f3e02fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1396521072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,7 +346,21 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: f87f6286e63e2bd4c9b22a8f9e081029, type: 2}
+  m_PanelSettings: {fileID: 11400000, guid: d1c8e6f7125e1684499d197b2708221c, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: c8e182ac280d3844399f88f662cf8222, type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: 4c2754b58aae00842a3a214b34953cdc, type: 3}
   m_SortingOrder: 0
+--- !u!114 &1396521073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1396521069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7492ef21c07668140aaee0f0c9b4116f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  indexHtmlString: 
+  waxJsString: 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using EosSharp.Core.Api.v1;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -17,6 +18,9 @@ public class WaxCloudWalletSampleScript : MonoBehaviour
     private Button _loginButton;
     private Button _signButton;
 
+    public string indexHtmlString;
+    public string waxJsString;
+
     private void Awake()
     {
         Screen = GetComponent<UIDocument>();
@@ -28,7 +32,6 @@ public class WaxCloudWalletSampleScript : MonoBehaviour
     {
         _waxCloudWalletPlugin = new GameObject(nameof(WaxCloudWalletPlugin)).AddComponent<WaxCloudWalletPlugin>();
 
-        //WcwWebGl.Initialize();
         _waxCloudWalletPlugin.OnTransactionSigned += WCWOnTransactionSigned;
         _waxCloudWalletPlugin.OnLoggedIn += WCWOnLoggedIn;
         _waxCloudWalletPlugin.OnError += WCWOnError;
@@ -40,7 +43,13 @@ public class WaxCloudWalletSampleScript : MonoBehaviour
 
         _initButton.clickable.clicked += () =>
         {
-            _waxCloudWalletPlugin.Initialize("https://wax.greymass.com");
+#if UNITY_WEBGL
+            _waxCloudWalletPlugin.InitializeWebGl("https://wax.greymass.com");
+#elif UNTIY_ANDROID || UNITY_IOS
+            _waxCloudWalletPlugin.InitializeMobile(1234, "http://127.0.0.1:1234/index.html", true, indexHtmlString, waxJsString);
+#else
+            _waxCloudWalletPlugin.InitializeDesktop(1234, "http://127.0.0.1:1234/index.html");
+#endif
         };
 
         _loginButton.clickable.clicked += () =>
@@ -61,18 +70,12 @@ public class WaxCloudWalletSampleScript : MonoBehaviour
 
     private void WCWOnTransactionSigned(WcwSignEvent obj)
     {
-        Debug.Log($"OnSigned {obj.Trx}");
+        Debug.Log($"OnSigned {JsonConvert.SerializeObject(obj.Result)}");
     }
 
     private void WCWOnLoggedIn(WcwLoginEvent obj)
     {
         Debug.Log($"OnLoggedIn {obj.Account}");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void Login()

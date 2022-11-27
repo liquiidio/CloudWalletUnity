@@ -6,6 +6,12 @@ using AOT;
 using EosSharp.Core.Api.v1;
 using Newtonsoft.Json;
 using Action = EosSharp.Core.Api.v1.Action;
+using System.IO;
+using System.Net;
+using System.Collections;
+using System.Threading;
+using System.Text;
+using System.Threading.Tasks;
 
 public class WcwErrorEvent
 {
@@ -21,12 +27,13 @@ public class WcwLoginEvent
 
 public class WcwSignEvent
 {
-    [JsonProperty("trx")]
-    public string Trx;
+    [JsonProperty("result")]
+    public PushTransactionResponse Result;
 }
 
 public class WaxCloudWalletPlugin : MonoBehaviour
 {
+#if !UNITY_EDITOR && UNITY_WEBGL
     private static WaxCloudWalletPlugin _instance;
 
     public bool IsInitialized => _instance._isInitialized;
@@ -102,10 +109,6 @@ public class WaxCloudWalletPlugin : MonoBehaviour
         DispatchEventQueue();
     }
 
-    void Start()
-    {
-    }
-
     public void Sign(Action[] actions)
     {
         if (!_instance._isInitialized)
@@ -139,15 +142,6 @@ public class WaxCloudWalletPlugin : MonoBehaviour
     public void Login()
     {
         WCWLogin();
-    }
-
-    public void Initialize(string rpcAddress, bool tryAutoLogin = false, string waxSigningURL = null, string waxAutoSigningURL = null)
-    {
-        WCWSetOnLogin(DelegateOnLoginEvent);
-        WCWSetOnSign(DelegateOnSignEvent);
-        WCWSetOnError(DelegateOnErrorEvent);
-        WCWInit(rpcAddress, tryAutoLogin, waxSigningURL, waxAutoSigningURL);
-        _instance._isInitialized = true;
     }
 
     [MonoPInvokeCallback(typeof(OnLoginCallback))]
@@ -212,10 +206,406 @@ public class WaxCloudWalletPlugin : MonoBehaviour
             }
 
             var signEvent = JsonConvert.DeserializeObject<WcwSignEvent>(msg);
-            if (!string.IsNullOrEmpty(signEvent?.Trx))
+            if (!string.IsNullOrEmpty(signEvent?.Result))
             {
                 _instance.OnTransactionSigned.Invoke(signEvent);
             }
         }
     }
-}
+#else
+
+    public class WcwPreflightResponse
+    {
+        [JsonProperty("ok")]
+        public bool Ok;
+    }
+
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+
+    private IntPtr unityWindow;
+
+    [DllImport("user32.dll")]
+    static extern IntPtr GetActiveWindow();
+
+    [DllImport("user32.dll")]
+    static extern bool SetForegroundWindow(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
+
+    const int ALT = 0xA4;
+    const int EXTENDEDKEY = 0x1;
+    const int KEYUP = 0x2;
+
+    private bool refocusWindow;
+
+    private void Update()
+    {
+        if (refocusWindow)
+            StartCoroutine(RefocusWindow(0f));
+    }
+
+    private IEnumerator RefocusWindow(float waitSeconds)
+    {
+        // wait for new window to appear
+        yield return new WaitWhile(() => unityWindow == GetActiveWindow());
+
+        yield return new WaitForSeconds(waitSeconds);
+
+        // Simulate alt press
+        keybd_event((byte)ALT, 0x45, EXTENDEDKEY | 0, 0);
+
+        // Simulate alt release
+        keybd_event((byte)ALT, 0x45, EXTENDEDKEY | KEYUP, 0);
+
+        SetForegroundWindow(unityWindow);
+
+        refocusWindow = false;
+    }
+
+#elif !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+    private UniversalSDK _universalSdk;
+
+    public void OpenCustomTabView(string url)
+    {
+        try
+        {
+            _universalSdk.OpenCustomTabView(url, result =>
+            {
+                result.Match(
+                    value =>
+                    {
+                        Debug.Log(value);
+                    },
+                    error =>
+                    {
+                        Debug.LogError(error);
+                    });
+            });
+        }
+        catch(Exception e)
+        {
+            errorMsg += e.Message;
+        }
+    }
+
+#endif
+
+    private string _remoteUrl;
+
+    private string _localUrl;
+
+    private bool _isLoggedIn;
+
+    private string _account;
+
+
+    public Action<WcwLoginEvent> OnLoggedIn;
+    public Action<WcwSignEvent> OnTransactionSigned;
+    public Action<WcwErrorEvent> OnError;
+
+    public string Account => _account;
+
+    private CancellationTokenSource tokenSource;
+    private CancellationToken token;
+    private byte[] indexHtml;
+    private byte[] waxjs;
+
+    public void InitializeWebGl(string rpcAddress, bool tryAutoLogin = false, string waxSigningURL = null, string waxAutoSigningURL = null)
+    {
+#if UNITY_WEBGL
+        WCWSetOnLogin(DelegateOnLoginEvent);
+        WCWSetOnSign(DelegateOnSignEvent);
+        WCWSetOnError(DelegateOnErrorEvent);
+        WCWInit(rpcAddress, tryAutoLogin, waxSigningURL, waxAutoSigningURL);
+        _instance._isInitialized = true;
+#endif
+    }
+
+    public void InitializeDesktop(uint localPort, string wcwSigningWebsiteUrl, bool hostLocalWebsite = true, string indexHtmlDataPath = null, string waxJsDataPath = null)
+    {
+        try
+        {
+            if (wcwSigningWebsiteUrl.StartsWith("https"))
+                throw new NotSupportedException("wcwSigningWebsiteUrl can't be SSL encrypted");
+
+            if (hostLocalWebsite)
+            {
+                string data;
+                if (indexHtmlDataPath == null)
+                    data = File.ReadAllText(Application.dataPath + "/Packages/WcwUnityWebGl/Assets/index.html");
+                else
+                    data = File.ReadAllText(indexHtmlDataPath);
+                indexHtml = Encoding.UTF8.GetBytes(data);
+
+                if (waxJsDataPath == null)
+                    data = File.ReadAllText(Application.dataPath + "/Packages/WcwUnityWebGl/Assets/waxjs.js");
+                else
+                    data = File.ReadAllText(waxJsDataPath);
+                waxjs = Encoding.UTF8.GetBytes(data);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
+        _localUrl = $"http://127.0.0.1:{localPort}/";
+        _remoteUrl = wcwSigningWebsiteUrl;
+    }
+
+    public void InitializeMobile(uint localPort, string wcwSigningWebsiteUrl, bool hostLocalWebsite, string indexHtmlString = null, string waxJsString = null)
+    {
+        try
+        {
+            if (wcwSigningWebsiteUrl.StartsWith("https"))
+                throw new NotSupportedException("wcwSigningWebsiteUrl can't be SSL encrypted");
+
+            if (hostLocalWebsite)
+            {
+                if (!string.IsNullOrEmpty(indexHtmlString) && !string.IsNullOrEmpty(waxJsString))
+                {
+                    indexHtml = Encoding.UTF8.GetBytes(indexHtmlString);
+                    waxjs = Encoding.UTF8.GetBytes(waxJsString);
+                }
+                else
+                    throw new NotSupportedException("Due to compression, on Android and iOS-Builds the index.html and wax.js must be provided as strings");
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
+        _localUrl = $"http://127.0.0.1:{localPort}/";
+        _remoteUrl = wcwSigningWebsiteUrl;
+#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+        _universalSdk = new GameObject(nameof(UniversalSDK)).AddComponent<UniversalSDK>();
+#endif
+    }
+
+
+    public void Sign(Action[] actions)
+    {
+        if (!_isLoggedIn)
+        {
+            Debug.Log("Not Logged in");
+            return;
+        }
+
+        foreach (var action in actions)
+        {
+            action.authorization = new List<PermissionLevel>()
+            {
+                new PermissionLevel()
+                {
+                    actor = _account,
+                    permission = "active"
+                }
+            };
+        }
+
+        StartBrowserCommunication(BuildUrl("sign", JsonConvert.SerializeObject(actions)));
+    }
+
+    public void Login()
+    {
+        StartBrowserCommunication(BuildUrl("login"));
+    }
+
+    private string BuildUrl(string loginOrSign, string json = null)
+    {
+        if (_remoteUrl.EndsWith("/"))
+        {
+            _remoteUrl = _remoteUrl.Substring(0, _remoteUrl.Length - 1);
+        }
+        if (json == null)
+            json = "";
+        return $"{_remoteUrl}#{loginOrSign}{json}";
+    }
+
+    public void StartBrowserCommunication(string url)
+    {
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+        unityWindow = GetActiveWindow();
+#endif
+
+        StartHttpListener();
+#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+        OpenCustomTabView(url);
+#else
+        Application.OpenURL(url);
+#endif
+
+    }
+
+    public void StartHttpListener()
+    {
+        try
+        {
+            tokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+            token = tokenSource.Token;
+            Task.Run(Listen);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
+    }
+
+    public async Task Listen()
+    {
+        try
+        {
+            using (var _listener = new HttpListener())
+            {
+                _listener.Prefixes.Add(_localUrl);
+                _listener.AuthenticationSchemes = AuthenticationSchemes.Anonymous;
+                _listener.Start();
+                var maxConcurrentRequests = 5;
+                var requests = new HashSet<Task>();
+                for (int i = 0; i < maxConcurrentRequests; i++)
+                    requests.Add(_listener.GetContextAsync());
+
+                while (!token.IsCancellationRequested)
+                {
+                    Task t = await Task.WhenAny(requests);
+                    requests.Remove(t);
+
+                    if (t is Task<HttpListenerContext>)
+                    {
+                        var context = (t as Task<HttpListenerContext>).Result;
+                        requests.Add(HandleRequest(context));
+                        requests.Add(_listener.GetContextAsync());
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
+        refocusWindow = true;
+    }
+
+    private async Task HandleRequest(HttpListenerContext context)
+    {
+        try
+        {
+            var request = context.Request;
+            var response = context.Response;
+
+            if (request.RawUrl.EndsWith("/index.html"))
+            {
+                response.Headers.Set("Content-Type", "text/html");
+
+                response.ContentLength64 = indexHtml.Length;
+
+                await response.OutputStream.WriteAsync(indexHtml, 0, indexHtml.Length);
+                response.Close();
+                return;
+            }
+
+            if (request.RawUrl.EndsWith("/waxjs.js"))
+            {
+                response.Headers.Set("Content-Type", "text/html");
+
+                response.ContentLength64 = waxjs.Length;
+
+                await response.OutputStream.WriteAsync(waxjs, 0, waxjs.Length);
+                response.Close();
+                return;
+            }
+
+            if (request.RawUrl.EndsWith("/favicon.ico"))
+            {
+                response.StatusCode = (int)HttpStatusCode.OK;
+                response.Close();
+                return;
+            }
+
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            response.Headers.Add("Access-Control-Allow-Methods", "POST, GET");
+
+            switch (request.HttpMethod)
+            {
+                case "GET":
+                    if (request.Url.ToString().EndsWith("preflight"))
+                    {
+                        if (request.ContentType == "application/json")
+                        {
+                            response.StatusCode = (int)HttpStatusCode.OK;
+                            response.ContentType = "application/json";
+
+                            var responseBody =
+                                Encoding.UTF8.GetBytes(
+                                    JsonConvert.SerializeObject(new WcwPreflightResponse() { Ok = true }));
+
+                            response.ContentLength64 = responseBody.Length;
+                            await response.OutputStream.WriteAsync(responseBody, 0, responseBody.Length);
+                            response.Close();
+                            break;
+                        }
+                        else
+                            throw new NotSupportedException($"ContentType {request.ContentType} is not supported");
+                    }
+                    else
+                        throw new NotSupportedException($"path {request.Url.ToString()} is not supported");
+                case "POST":
+                    if (request.ContentType == "application/json")
+                    {
+                        string jsonBody;
+                        using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                        {
+                            jsonBody = await reader.ReadToEndAsync();
+                        }
+
+                        var loginEvent = JsonConvert.DeserializeObject<WcwLoginEvent>(jsonBody);
+                        if (!string.IsNullOrEmpty(loginEvent?.Account))
+                        {
+                            _account = loginEvent?.Account;
+                            if (loginEvent?.Account != null)
+                                _isLoggedIn = true;
+
+                            response.StatusCode = (int)HttpStatusCode.OK;
+                            response.Close();
+
+                            OnLoggedIn?.Invoke(loginEvent);
+                            tokenSource.Cancel();
+                            break;
+                        }
+
+                        var errorEvent = JsonConvert.DeserializeObject<WcwErrorEvent>(jsonBody);
+                        if (!string.IsNullOrEmpty(errorEvent?.Message))
+                        {
+                            response.StatusCode = (int)HttpStatusCode.OK;
+                            response.Close();
+
+                            OnError?.Invoke(errorEvent);
+                            tokenSource.Cancel();
+                            break;
+                        }
+
+                        var signEvent = JsonConvert.DeserializeObject<WcwSignEvent>(jsonBody);
+                        if (signEvent?.Result != null)
+                        {
+                            response.StatusCode = (int)HttpStatusCode.OK;
+                            response.Close();
+
+                            OnTransactionSigned.Invoke(signEvent);
+                            tokenSource.Cancel();
+                            break;
+                        }
+                        throw new NotSupportedException($"Can't parse Json-Body {jsonBody}");
+                    }
+                    else
+                        throw new NotSupportedException($"ContentType {request.ContentType} is not supported");
+                default:
+                    throw new NotSupportedException($"HttpMethod {request.HttpMethod} is not supported");
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
+    }
+#endif
+    }
