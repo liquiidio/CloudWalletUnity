@@ -14,6 +14,9 @@ namespace Assets.Packages.WaxCloudWalletUnity.Examples
         public MainView MainView;
         public string Account { get; private set; }
 
+        public string indexHtmlString;
+        public string waxJsString;
+
         public void Start()
         {
 
