@@ -33,7 +33,10 @@ public class WcwSignEvent
 
 public class WaxCloudWalletPlugin : MonoBehaviour
 {
-#if !UNITY_EDITOR && UNITY_WEBGL
+    #region WebGL
+#if UNITY_WEBGL
+
+
     private static WaxCloudWalletPlugin _instance;
 
     public bool IsInitialized => _instance._isInitialized;
@@ -152,7 +155,7 @@ public class WaxCloudWalletPlugin : MonoBehaviour
         var msg = Marshal.PtrToStringAuto(onLoginPtr);
         if (msg?.Length == 0 || msg == null)
             throw new ApplicationException("LoginCallback Message is null");
-        
+
         _instance._eventList.Add(string.Copy(msg));
     }
 
@@ -164,7 +167,7 @@ public class WaxCloudWalletPlugin : MonoBehaviour
         var msg = Marshal.PtrToStringAuto(onSignPtr);
         if (msg?.Length == 0 || msg == null)
             throw new ApplicationException("SignCallback Message is null");
-        
+
         _instance._eventList.Add(string.Copy(msg));
     }
 
@@ -206,20 +209,47 @@ public class WaxCloudWalletPlugin : MonoBehaviour
             }
 
             var signEvent = JsonConvert.DeserializeObject<WcwSignEvent>(msg);
-            if (!string.IsNullOrEmpty(signEvent?.Result))
+            if (signEvent?.Result != null)
             {
                 _instance.OnTransactionSigned.Invoke(signEvent);
             }
         }
     }
-#else
 
-    public class WcwPreflightResponse
+#endif
+    #endregion
+
+    #region Mobile
+#if (UNITY_ANDROID || UNITY_IOS)
+
+    private UniversalSDK _universalSdk;
+
+    public void OpenCustomTabView(string url)
     {
-        [JsonProperty("ok")]
-        public bool Ok;
+        try
+        {
+            _universalSdk.OpenCustomTabView(url, result =>
+            {
+                result.Match(
+                    value =>
+                    {
+                        Debug.Log(value);
+                    },
+                    error =>
+                    {
+                        Debug.LogError(error);
+                    });
+            });
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
     }
+#endif
+    #endregion
 
+    #region Desktop
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 
     private IntPtr unityWindow;
@@ -243,6 +273,8 @@ public class WaxCloudWalletPlugin : MonoBehaviour
     {
         if (refocusWindow)
             StartCoroutine(RefocusWindow(0f));
+
+        DispatchEventQueue();
     }
 
     private IEnumerator RefocusWindow(float waitSeconds)
@@ -262,54 +294,8 @@ public class WaxCloudWalletPlugin : MonoBehaviour
 
         refocusWindow = false;
     }
-
-#elif !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
-    private UniversalSDK _universalSdk;
-
-    public void OpenCustomTabView(string url)
-    {
-        try
-        {
-            _universalSdk.OpenCustomTabView(url, result =>
-            {
-                result.Match(
-                    value =>
-                    {
-                        Debug.Log(value);
-                    },
-                    error =>
-                    {
-                        Debug.LogError(error);
-                    });
-            });
-        }
-        catch(Exception e)
-        {
-            errorMsg += e.Message;
-        }
-    }
-
 #endif
-
-    private string _remoteUrl;
-
-    private string _localUrl;
-
-    private bool _isLoggedIn;
-
-    private string _account;
-
-
-    public Action<WcwLoginEvent> OnLoggedIn;
-    public Action<WcwSignEvent> OnTransactionSigned;
-    public Action<WcwErrorEvent> OnError;
-
-    public string Account => _account;
-
-    private CancellationTokenSource tokenSource;
-    private CancellationToken token;
-    private byte[] indexHtml;
-    private byte[] waxjs;
+    #endregion
 
     public void InitializeWebGl(string rpcAddress, bool tryAutoLogin = false, string waxSigningURL = null, string waxAutoSigningURL = null)
     {
@@ -324,6 +310,7 @@ public class WaxCloudWalletPlugin : MonoBehaviour
 
     public void InitializeDesktop(uint localPort, string wcwSigningWebsiteUrl, bool hostLocalWebsite = true, string indexHtmlDataPath = null, string waxJsDataPath = null)
     {
+#if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN
         try
         {
             if (wcwSigningWebsiteUrl.StartsWith("https"))
@@ -350,11 +337,16 @@ public class WaxCloudWalletPlugin : MonoBehaviour
             Debug.Log(e);
         }
         _localUrl = $"http://127.0.0.1:{localPort}/";
-        _remoteUrl = wcwSigningWebsiteUrl;
+        if (hostLocalWebsite == false)
+            _remoteUrl = wcwSigningWebsiteUrl;
+        else
+            _remoteUrl = $"http://127.0.0.1:{localPort}/index.html";
+#endif
     }
 
     public void InitializeMobile(uint localPort, string wcwSigningWebsiteUrl, bool hostLocalWebsite, string indexHtmlString = null, string waxJsString = null)
     {
+#if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN
         try
         {
             if (wcwSigningWebsiteUrl.StartsWith("https"))
@@ -377,11 +369,70 @@ public class WaxCloudWalletPlugin : MonoBehaviour
         }
         _localUrl = $"http://127.0.0.1:{localPort}/";
         _remoteUrl = wcwSigningWebsiteUrl;
-#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
+#endif
+#if (UNITY_ANDROID || UNITY_IOS)
         _universalSdk = new GameObject(nameof(UniversalSDK)).AddComponent<UniversalSDK>();
 #endif
     }
 
+    #region Mobile
+#if UNITY_IOS || UNITY_ANDROID
+    
+    public void StartBrowserCommunication(string url)
+    {
+        StartHttpListener();
+        OpenCustomTabView(url);
+    }
+    
+#endif
+    #endregion
+
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+    public void StartBrowserCommunication(string url)
+    {
+        unityWindow = GetActiveWindow();
+
+        StartHttpListener();
+        Application.OpenURL(url);
+    }
+#endif
+
+#if UNITY_STANDALONE && !UNITY_STANDALONE_WIN
+    public void StartBrowserCommunication(string url)
+    {
+        StartHttpListener();
+        Application.OpenURL(url);
+    }
+#endif
+
+    #region Desktop and Mobile
+#if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN
+
+    public class WcwPreflightResponse
+    {
+        [JsonProperty("ok")]
+        public bool Ok;
+    }
+
+    private string _remoteUrl;
+
+    private string _localUrl;
+
+    private bool _isLoggedIn;
+
+    private string _account;
+
+
+    public Action<WcwLoginEvent> OnLoggedIn;
+    public Action<WcwSignEvent> OnTransactionSigned;
+    public Action<WcwErrorEvent> OnError;
+
+    public string Account => _account;
+
+    private CancellationTokenSource tokenSource;
+    private CancellationToken token;
+    private byte[] indexHtml;
+    private byte[] waxjs;
 
     public void Sign(Action[] actions)
     {
@@ -420,21 +471,6 @@ public class WaxCloudWalletPlugin : MonoBehaviour
         if (json == null)
             json = "";
         return $"{_remoteUrl}#{loginOrSign}{json}";
-    }
-
-    public void StartBrowserCommunication(string url)
-    {
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-        unityWindow = GetActiveWindow();
-#endif
-
-        StartHttpListener();
-#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
-        OpenCustomTabView(url);
-#else
-        Application.OpenURL(url);
-#endif
-
     }
 
     public void StartHttpListener()
@@ -558,46 +594,16 @@ public class WaxCloudWalletPlugin : MonoBehaviour
                             jsonBody = await reader.ReadToEndAsync();
                         }
 
-                        var loginEvent = JsonConvert.DeserializeObject<WcwLoginEvent>(jsonBody);
-                        if (!string.IsNullOrEmpty(loginEvent?.Account))
-                        {
-                            _account = loginEvent?.Account;
-                            if (loginEvent?.Account != null)
-                                _isLoggedIn = true;
+                        _eventList.Add(string.Copy(jsonBody));
 
-                            response.StatusCode = (int)HttpStatusCode.OK;
-                            response.Close();
+                        response.StatusCode = (int)HttpStatusCode.OK;
+                        response.Close();
 
-                            OnLoggedIn?.Invoke(loginEvent);
-                            tokenSource.Cancel();
-                            break;
-                        }
-
-                        var errorEvent = JsonConvert.DeserializeObject<WcwErrorEvent>(jsonBody);
-                        if (!string.IsNullOrEmpty(errorEvent?.Message))
-                        {
-                            response.StatusCode = (int)HttpStatusCode.OK;
-                            response.Close();
-
-                            OnError?.Invoke(errorEvent);
-                            tokenSource.Cancel();
-                            break;
-                        }
-
-                        var signEvent = JsonConvert.DeserializeObject<WcwSignEvent>(jsonBody);
-                        if (signEvent?.Result != null)
-                        {
-                            response.StatusCode = (int)HttpStatusCode.OK;
-                            response.Close();
-
-                            OnTransactionSigned.Invoke(signEvent);
-                            tokenSource.Cancel();
-                            break;
-                        }
-                        throw new NotSupportedException($"Can't parse Json-Body {jsonBody}");
+                        tokenSource.Cancel();
                     }
                     else
                         throw new NotSupportedException($"ContentType {request.ContentType} is not supported");
+                    break;
                 default:
                     throw new NotSupportedException($"HttpMethod {request.HttpMethod} is not supported");
             }
@@ -607,5 +613,43 @@ public class WaxCloudWalletPlugin : MonoBehaviour
             Debug.Log(e);
         }
     }
-#endif
+
+    private readonly List<string> _eventList = new List<string>();
+    public void DispatchEventQueue()
+    {
+        var messageListCopy = new List<string>(_eventList);
+        _eventList.Clear();
+
+        foreach (var msg in messageListCopy)
+        {
+            var loginEvent = JsonConvert.DeserializeObject<WcwLoginEvent>(msg);
+            if (!string.IsNullOrEmpty(loginEvent?.Account))
+            {
+                _account = loginEvent?.Account;
+                if (loginEvent?.Account != null)
+                    _isLoggedIn = true;
+
+                OnLoggedIn?.Invoke(loginEvent);
+                continue;
+            }
+
+            var errorEvent = JsonConvert.DeserializeObject<WcwErrorEvent>(msg);
+            if (!string.IsNullOrEmpty(errorEvent?.Message))
+            {
+                OnError?.Invoke(errorEvent);
+                continue;
+            }
+
+            var signEvent = JsonConvert.DeserializeObject<WcwSignEvent>(msg);
+            if (signEvent?.Result != null)
+            {
+                OnTransactionSigned.Invoke(signEvent);
+                continue;
+            }
+            throw new NotSupportedException($"Can't parse Json-Body {msg}");
+        }
     }
+
+#endif
+    #endregion
+}

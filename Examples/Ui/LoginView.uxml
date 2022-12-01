@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Packages/anchorlinktransportsharp/Examples/UiToolkit/Stylesheet/AnchorUSSFile.uss?fileID=7433441132597879392&amp;guid=5ff9847031198df45b1af9e97ac77d19&amp;type=3#AnchorUSSFile" />
+    <ui:VisualElement name="screen" style="align-items: center; justify-content: center; height: 100%; width: 100%; flex-direction: row; background-color: rgba(23, 18, 26, 0.78); -unity-font-style: bold;">
+        <ui:VisualElement name="anchor-link-logged-screen" style="width: 90%; height: 90%; background-image: none; background-color: rgb(241, 241, 241); border-top-left-radius: 20px; border-bottom-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; display: flex; margin-left: 20px; margin-right: 20px; margin-top: 20px; margin-bottom: 20px; padding-top: 50px;">
+            <ui:VisualElement name="anchor-link-account" style="position: absolute; top: 11px; right: 10px; left: auto; bottom: auto; width: 20%; height: 8%; background-image: none; justify-content: space-between; align-items: center; opacity: 1;">
+                <ui:Label text="Anchor" display-tooltip-when-elided="true" name="account-label" style="color: rgb(65, 57, 57); -unity-font: url(&apos;project://database/Assets/Packages/anchorlinktransportsharp/Examples/UiToolkit/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=1cd74a0089e942a4ba2129d8eb6be746&amp;type=3#NotInter-Regular&apos;);" />
+            </ui:VisualElement>
+            <ui:VisualElement name="anchor-link-request" style="background-color: rgb(255, 255, 255); width: 100%; height: 100%; padding-left: 20px; padding-right: 20px; padding-top: 20px; padding-bottom: 20px; border-top-left-radius: 0; border-bottom-left-radius: 20px; border-top-right-radius: 0; border-bottom-right-radius: 20px;">
+                <ui:VisualElement name="anchor-link-info" style="width: 100%; height: 10%; align-items: center;">
+                    <ui:Label display-tooltip-when-elided="true" name="anchor-link-subtitle-label" style="width: 300px; height: 36.4px; -unity-text-align: middle-center; font-size: 13px; margin-top: 14px; color: rgb(184, 192, 218); -unity-font-style: bold; white-space: normal;" />
+                    <ui:Label text="LOGIN WITH WCW" display-tooltip-when-elided="true" name="anchor-link-title-label" style="width: auto; height: auto; -unity-text-align: middle-center; font-size: 25px; margin-top: 14px; color: rgb(0, 0, 0); -unity-font-style: bold; -unity-font: url(&apos;project://database/Assets/Packages/anchorlinktransportsharp/Examples/UiToolkit/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=1cd74a0089e942a4ba2129d8eb6be746&amp;type=3#NotInter-Regular&apos;); white-space: normal;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="anchor-link-info" style="width: 100%; height: 90%; align-items: center; justify-content: flex-start; margin-top: 50px;">
+                    <ui:VisualElement name="anchor-link-button" style="width: 100%; height: 40%; align-items: center;">
+                        <ui:Button text="Login" display-tooltip-when-elided="true" name="login-button" class="anchor-launch-button" style="background-color: rgb(38, 80, 214); border-top-left-radius: 12px; border-bottom-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; font-size: 17px; padding-left: 18px; padding-right: 18px; padding-top: 20px; padding-bottom: 20px; margin-top: 21px; color: rgb(255, 255, 255); width: 40%; height: auto; -unity-text-align: middle-center;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
