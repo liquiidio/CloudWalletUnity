@@ -17,7 +17,7 @@ var WcwUnityWebGlPlugin =  {
                 rpcEndpoint: UTF8ToString(rpcAddress),
                 tryAutoLogin: tryAutoLogin != null ? tryAutoLogin : null,
                 waxSigningURL: waxSigningURL != null ? UTF8ToString(waxSigningURL) : null,
-                waxAutoSigningURL: waxAutoSigningURL != null = UTF8ToString(waxAutoSigningURL) : null
+                waxAutoSigningURL: waxAutoSigningURL != null ? UTF8ToString(waxAutoSigningURL) : null
             });
             if(waxCloudWalletWebglState.Debug){
                 console.log("wax Initialized!");
