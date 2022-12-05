@@ -19,11 +19,6 @@ namespace Assets.Packages.WaxCloudWalletUnity.Examples
 
         public void Start()
         {
-
-        }
-
-        public void Login()
-        {
             _waxCloudWalletPlugin = new GameObject(nameof(WaxCloudWalletPlugin)).AddComponent<WaxCloudWalletPlugin>();
 
             _waxCloudWalletPlugin.OnLoggedIn += (loginEvent) =>
@@ -52,7 +47,10 @@ namespace Assets.Packages.WaxCloudWalletUnity.Examples
 #else
             _waxCloudWalletPlugin.InitializeDesktop(1234, "http://127.0.0.1:1234/index.html");
 #endif
+        }
 
+        public void Login()
+        {
             _waxCloudWalletPlugin.Login();
         }
 
