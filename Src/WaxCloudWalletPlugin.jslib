@@ -21,9 +21,9 @@ var WcwUnityWebGlPlugin =  {
 		
             waxCloudWalletWebglState.wax = new waxjs.WaxJS({
                 rpcEndpoint: UTF8ToString(rpcAddress),
-                tryAutoLogin: tryAutoLogin != 0 ? tryAutoLogin : null,
-                waxSigningURL: waxSigningURLString != "" ? waxSigningURLString : null,
-                waxAutoSigningURL: waxAutoSigningURLString != "" ? waxAutoSigningURLString : null
+                tryAutoLogin: tryAutoLogin,
+                waxSigningURL: waxSigningURLString !== "" ? waxSigningURLString : null,
+                waxAutoSigningURL: waxAutoSigningURLString !== "" ? waxAutoSigningURLString : null
             });
             if(waxCloudWalletWebglState.Debug){
                 console.log("wax Initialized!");
