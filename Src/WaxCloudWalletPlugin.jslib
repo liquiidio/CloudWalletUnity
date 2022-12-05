@@ -13,11 +13,17 @@ var WcwUnityWebGlPlugin =  {
         }
 
         try {
+		
+			var waxAutoSigningURLString = UTF8ToString(waxAutoSigningURL);
+			var waxSigningURLString = UTF8ToString(waxSigningURL);
+			console.log("waxAutoSigningURLString " + waxAutoSigningURLString);
+			console.log("waxSigningURLString " + waxSigningURLString);
+		
             waxCloudWalletWebglState.wax = new waxjs.WaxJS({
                 rpcEndpoint: UTF8ToString(rpcAddress),
                 tryAutoLogin: tryAutoLogin != 0 ? tryAutoLogin : null,
-                waxSigningURL: waxSigningURL != 0 ? UTF8ToString(waxSigningURL) : null,
-                waxAutoSigningURL: waxAutoSigningURL != 0 ? UTF8ToString(waxAutoSigningURL) : null
+                waxSigningURL: waxSigningURLString != "" ? waxSigningURLString : null,
+                waxAutoSigningURL: waxAutoSigningURLString != "" ? waxAutoSigningURLString : null
             });
             if(waxCloudWalletWebglState.Debug){
                 console.log("wax Initialized!");
