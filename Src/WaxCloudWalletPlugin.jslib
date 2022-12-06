@@ -16,17 +16,31 @@ var WcwUnityWebGlPlugin =  {
 		
 			var waxAutoSigningURLString = UTF8ToString(waxAutoSigningURL);
 			var waxSigningURLString = UTF8ToString(waxSigningURL);
-			console.log("waxAutoSigningURLString " + waxAutoSigningURLString);
-			console.log("waxSigningURLString " + waxSigningURLString);
 		
-            waxCloudWalletWebglState.wax = new waxjs.WaxJS({
+            var waxJsConfig = {
                 rpcEndpoint: UTF8ToString(rpcAddress),
-                tryAutoLogin: tryAutoLogin,
-                waxSigningURL: waxSigningURLString !== "" ? waxSigningURLString : null,
-                waxAutoSigningURL: waxAutoSigningURLString !== "" ? waxAutoSigningURLString : null
-            });
+                tryAutoLogin: tryAutoLogin
+            };
+
+            if(waxSigningURLString !== ""){
+                if(waxCloudWalletWebglState.Debug){
+                    console.log("waxSigningURLString != null -> " + waxSigningURLString);
+                }
+                waxJsConfig.waxSigningURL = waxSigningURLString;            
+            }
+
+
+            if(waxAutoSigningURLString !== ""){
+                if(waxCloudWalletWebglState.Debug){
+                    console.log("waxAutoSigningURLString != null -> " + waxAutoSigningURLString);
+                }
+                waxJsConfig.waxAutoSigningURL = waxAutoSigningURLString;            
+            }
+
+            waxCloudWalletWebglState.wax = new waxjs.WaxJS(waxJsConfig);
             if(waxCloudWalletWebglState.Debug){
                 console.log("wax Initialized!");
+                console.log("waxJsConfig: " + JSON.stringify(waxJsConfig));
             }
         } catch(e) {
             if(waxCloudWalletWebglState.Debug){
