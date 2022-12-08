@@ -118,8 +118,7 @@ var WcwUnityWebGlPlugin =  {
                     expireSeconds: 30
                 });
 
-                var msg = JSON.stringify({ message: JSON.stringify(result) });
-				console.log(msg);
+                var msg = JSON.stringify({ result: result });
 			    var length = lengthBytesUTF8(msg) + 1;
 			    var buffer = _malloc(length);
 			    stringToUTF8(msg, buffer, length);
