@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Assets.Packages.WaxCloudWalletUnity.Examples.Ui
+namespace WaxCloudWalletUnity.Examples.Ui
 {
     [RequireComponent(typeof(UIDocument))]
     public class ScreenBase : MonoBehaviour

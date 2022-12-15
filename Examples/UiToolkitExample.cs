@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using Assets.Packages.WaxCloudWalletUnity.Examples.Ui;
+using WaxCloudWalletUnity.Examples.Ui;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace Assets.Packages.WaxCloudWalletUnity.Examples
+namespace WaxCloudWalletUnity.Examples
 {
     public class UiToolkitExample : MonoBehaviour
     {

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Action = EosSharp.Core.Api.v1.Action;
 
-namespace Assets.Packages.WaxCloudWalletUnity.Examples.Ui
+namespace WaxCloudWalletUnity.Examples.Ui
 {
     public class MainView : ScreenBase
     {
@@ -183,7 +183,7 @@ namespace Assets.Packages.WaxCloudWalletUnity.Examples.Ui
                     name = "buyram",
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission
@@ -218,7 +218,7 @@ namespace Assets.Packages.WaxCloudWalletUnity.Examples.Ui
 
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission
@@ -252,7 +252,7 @@ namespace Assets.Packages.WaxCloudWalletUnity.Examples.Ui
 
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission
@@ -288,7 +288,7 @@ namespace Assets.Packages.WaxCloudWalletUnity.Examples.Ui
                     name = "voteproducer",
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission

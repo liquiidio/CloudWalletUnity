@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Assets.Packages.WaxCloudWalletUnity.Examples.Ui
+namespace WaxCloudWalletUnity.Examples.Ui
 {
     public class LoginView : ScreenBase
     {
