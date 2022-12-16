@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
+// ReSharper disable once RedundantUsingDirective
+using AOT; // Do not remove!
 using EosSharp.Core.Api.v1;
 using Newtonsoft.Json;
 using Action = EosSharp.Core.Api.v1.Action;
