@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.InteropServices;
-using AOT;
 using EosSharp.Core.Api.v1;
 using Newtonsoft.Json;
 using Action = EosSharp.Core.Api.v1.Action;
