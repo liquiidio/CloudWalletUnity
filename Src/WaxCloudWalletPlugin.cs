@@ -34,6 +34,8 @@ public class WcwSignEvent
 
 public class WaxCloudWalletPlugin : MonoBehaviour
 {
+    private bool refocusWindow;
+
     #region WebGL
 #if UNITY_WEBGL
 
@@ -267,8 +269,6 @@ public class WaxCloudWalletPlugin : MonoBehaviour
     const int ALT = 0xA4;
     const int EXTENDEDKEY = 0x1;
     const int KEYUP = 0x2;
-
-    private bool refocusWindow;
 
     private void Update()
     {
