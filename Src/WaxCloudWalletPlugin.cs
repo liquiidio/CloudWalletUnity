@@ -310,7 +310,7 @@ public class WaxCloudWalletPlugin : MonoBehaviour
 
     public void InitializeDesktop(uint localPort, string wcwSigningWebsiteUrl, bool hostLocalWebsite = true, string indexHtmlDataPath = null, string waxJsDataPath = null)
     {
-#if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN
+#if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX
         try
         {
             if (wcwSigningWebsiteUrl.StartsWith("https"))
@@ -397,7 +397,7 @@ public class WaxCloudWalletPlugin : MonoBehaviour
     }
 #endif
 
-#if UNITY_STANDALONE && !UNITY_STANDALONE_WIN
+#if (UNITY_STANDALONE || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX) && !UNITY_STANDALONE_WIN
     public void StartBrowserCommunication(string url)
     {
         StartHttpListener();
@@ -406,7 +406,7 @@ public class WaxCloudWalletPlugin : MonoBehaviour
 #endif
 
     #region Desktop and Mobile
-#if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN
+#if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX
 
     public class WcwPreflightResponse
     {
