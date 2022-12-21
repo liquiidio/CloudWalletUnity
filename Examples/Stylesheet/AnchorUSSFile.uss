@@ -57,9 +57,6 @@ VisualElement {
     height: 59px;
     flex-grow: 0;
     -unity-font: url('project://database/Assets/Packages/anchorlinktransportsharp/Examples/UiToolkit/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&guid=1cd74a0089e942a4ba2129d8eb6be746&type=3#NotInter-Regular');
-    transition-duration: 0s;
-    transition-timing-function: ease;
-    transition-delay: 0s;
 }
 
 .version-visibility {
