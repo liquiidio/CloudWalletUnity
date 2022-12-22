@@ -7,8 +7,7 @@
 
 # WAX Cloud Wallet (WCW) (!TODO ALL!)
 
-One Paragraph of the package description/overview.
-Reference any services and additional sources used by the package .Can be a link
+A combination of local HttpListeners receiving OAuth-Callbacks from WCW-related web-adresses opened through the WebView-Plugin, gathering necessary initial information like OAuth-Tokens, followed by regular non-browser-based (no WebView needed) communication with the WCW-API/Server.
 
 
 # Installation
