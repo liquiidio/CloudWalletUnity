@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 namespace WaxCloudWalletUnity.Examples.Ui
 {
-    public class LoginView : ScreenBase
+    public class WaxCloudWalletLoginPanel : ScreenBase
     {
         /*
          * Child-Controls
@@ -17,7 +17,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
          * Fields, Properties
          */
         [SerializeField] internal UiToolkitExample UiToolkitExample;
-        [SerializeField] internal MainView MainView;
+        [SerializeField] internal WaxCloudWalletMainPanel WaxCloudWalletMainPanel;
 
 
         void Start()

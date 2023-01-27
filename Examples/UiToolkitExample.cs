@@ -10,8 +10,8 @@ namespace WaxCloudWalletUnity.Examples
     {
         // Assign UnityTransport through the Editor
         private WaxCloudWalletPlugin _waxCloudWalletPlugin;
-        public LoginView LoginView;
-        public MainView MainView;
+        public WaxCloudWalletLoginPanel WaxCloudWalletLoginPanel;
+        public WaxCloudWalletMainPanel WaxCloudWalletMainPanel;
         public string Account { get; private set; }
 
         public string indexHtmlString;
@@ -25,9 +25,9 @@ namespace WaxCloudWalletUnity.Examples
             {
                 Account = loginEvent.Account;
                 Debug.Log($"{loginEvent.Account} Logged In");
-                MainView.Rebind(Account);
-                LoginView.Hide();
-                MainView.Show();
+                WaxCloudWalletMainPanel.Rebind(Account);
+                WaxCloudWalletLoginPanel.Hide();
+                WaxCloudWalletMainPanel.Show();
             };
 
             _waxCloudWalletPlugin.OnError += (errorEvent) =>

@@ -7,9 +7,9 @@ using Action = EosSharp.Core.Api.v1.Action;
 
 namespace WaxCloudWalletUnity.Examples.Ui
 {
-    public class MainView : ScreenBase
+    public class WaxCloudWalletMainPanel : ScreenBase
     {
-        /*
+        /**
          * Child-Controls
          */
         private Button _changeToBidNameButton;
@@ -26,17 +26,17 @@ namespace WaxCloudWalletUnity.Examples.Ui
         private Button _sellRamButton;
         private Button _logoutButton;
 
-        private TextField _toTextField;
-        private TextField _fromTextField;
-        private TextField _memoTextField;
-        private TextField _nameToBidTextField;
-        private TextField _quantityTextField;
-        private TextField _receiverAccountTextField;
-        private TextField _userAccountTextField;
-        private TextField _sellRamAmountTextField;
-        private TextField _amountToBuyTextField;
-        private TextField _amountWaxTextField;
-        private TextField _bidAmountTextField;
+        private static TextField _toTextField;
+        private static TextField _fromTextField;
+        private static TextField _memoTextField;
+        private static TextField _nameToBidTextField;
+        private static TextField _quantityTextField;
+        private static TextField _receiverAccountTextField;
+        private static TextField _userAccountTextField;
+        private static TextField _sellRamAmountTextField;
+        private static TextField _amountToBuyTextField;
+        private static TextField _amountWaxTextField;
+        private static TextField _bidAmountTextField;
 
         private VisualElement _sellRamBox;
         private VisualElement _transferTokenBox;
@@ -48,11 +48,11 @@ namespace WaxCloudWalletUnity.Examples.Ui
         private Label _loginTitleLabel;
         private Label _accountLabel;
 
-        /*
+        /**
          * Fields, Properties
          */
         [SerializeField] internal UiToolkitExample UiToolkitExample;
-        [SerializeField] internal LoginView LoginView;
+        [SerializeField] internal WaxCloudWalletLoginPanel WaxCloudWalletLoginPanel;
 
 
         private void Start()
@@ -367,6 +367,90 @@ namespace WaxCloudWalletUnity.Examples.Ui
             _bidAmountTextField.SetValueWithoutNotify($"{amount}");
         }
 
+
+
+        /// <summary>
+        /// Called when ctrl + v is pressed in browser (webgl)
+        /// </summary>
+        /// <param name="pastedText">The pasted text.</param>
+        public void OnBrowserClipboardPaste(string pastedText)
+        {
+            if (string.IsNullOrEmpty(pastedText))
+                return;
+
+            if (_nameToBidTextField != null && _nameToBidTextField.focusController.focusedElement == _nameToBidTextField)
+            {
+                _nameToBidTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_receiverAccountTextField != null && _receiverAccountTextField.focusController.focusedElement == _receiverAccountTextField)
+            {
+                _receiverAccountTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_toTextField != null && _toTextField.focusController.focusedElement == _toTextField)
+            {
+                _toTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_memoTextField != null && _memoTextField.focusController.focusedElement == _memoTextField)
+            {
+                _memoTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_quantityTextField != null && _quantityTextField.focusController.focusedElement == _quantityTextField)
+            {
+                _quantityTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_bidAmountTextField != null && _bidAmountTextField.focusController.focusedElement == _bidAmountTextField)
+            {
+                _bidAmountTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_amountToBuyTextField != null && _amountToBuyTextField.focusController.focusedElement == _amountToBuyTextField)
+            {
+                _amountToBuyTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_sellRamAmountTextField != null && _sellRamAmountTextField.focusController.focusedElement == _sellRamAmountTextField)
+            {
+                _sellRamAmountTextField.SetValueWithoutNotify(pastedText);
+            }
+        }
+
+        /// <summary>
+        /// Called when ctrl + v is pressed in browser for the PluginSuiteMultiExample Scene (webgl)
+        /// </summary>
+        /// <param name="pastedText">The pasted text.</param>
+        public static void MultiExampleClipboardPaste(string pastedText)
+        {
+            if (_nameToBidTextField != null && _nameToBidTextField.focusController.focusedElement == _nameToBidTextField)
+            {
+                _nameToBidTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_receiverAccountTextField != null && _receiverAccountTextField.focusController.focusedElement == _receiverAccountTextField)
+            {
+                _receiverAccountTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_toTextField != null && _toTextField.focusController.focusedElement == _toTextField)
+            {
+                _toTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_memoTextField != null && _memoTextField.focusController.focusedElement == _memoTextField)
+            {
+                _memoTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_quantityTextField != null && _quantityTextField.focusController.focusedElement == _quantityTextField)
+            {
+                _quantityTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_bidAmountTextField != null && _bidAmountTextField.focusController.focusedElement == _bidAmountTextField)
+            {
+                _bidAmountTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_amountToBuyTextField != null && _amountToBuyTextField.focusController.focusedElement == _amountToBuyTextField)
+            {
+                _amountToBuyTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_sellRamAmountTextField != null && _sellRamAmountTextField.focusController.focusedElement == _sellRamAmountTextField)
+            {
+                _sellRamAmountTextField.SetValueWithoutNotify(pastedText);
+            }
+        }
         #endregion
     }
 }
