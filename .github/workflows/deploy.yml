@@ -1,9 +1,6 @@
 name: Deploy
 
-on:
-  push:
-    tags: 
-      - "[0-9]+.[0-9]+.[0-9]+*"
+on: [push]
 
 jobs:
   pack-unitypackage:
@@ -14,23 +11,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: main
+          ref: unity_develop
           fetch-depth: 0
       - name: Find all meta files
         run: |
-          echo "Assets.meta" > metaList
-          echo "Examples.meta" > metaList
-          echo "Src.meta" > metaList
-          echo "README.md.meta" > metaList
-          find Assets/ -name \*.meta >> metaList
-          find Examples/ -name \*.meta >> metaList
-          find Src/ -name \*.meta >> metaList
+          git mv Assets temp
+          mkdir Assets
+          mkdir $PKG_ROOT
+          git mv temp $PKG_ROOT
+          git mv $PKG_ROOT/temp $PKG_ROOT/Assets
+          git mv Assets.meta $PKG_ROOT
+          git mv Examples $PKG_ROOT
+          git mv Examples.meta $PKG_ROOT
+          git mv Src $PKG_ROOT
+          git mv Src.meta $PKG_ROOT
+          git mv README.md $PKG_ROOT || true
+          git mv README.md.meta $PKG_ROOT || true
+          find $PKG_ROOT/ -name \*.meta >> metaList
+        env:
+          PKG_ROOT: Assets/WCWUnity
       - name: Make directory for our unity package
         run: mkdir a
       - name: Create Unity Package
         uses: pCYSl5EDgo/create-unitypackage@master
         with:
-          package-path: 'a/io.liquiid.wcwunitywebgl.unitypackage'
+          package-path: 'a/wcwunity.unitypackage'
           include-files: metaList
       - name: Upload package
         uses: actions/upload-artifact@v1
@@ -55,6 +60,8 @@ jobs:
         git config --global user.name 'github-bot'
         git config --global user.email 'github-bot@users.noreply.github.com'
         git checkout -b upm                                            # checkout the branch
+        git mv Examples Samples~
+        git rm Examples.meta
         git rm -r .github
         git commit -am "removed workflow files"
         git push -u origin upm --force                              # commit the branch
@@ -73,8 +80,8 @@ jobs:
         id: create_release
         uses: ncipollo/release-action@v1.12.0
         with:
-          tag: ${{ env.VERSION }}
-          name: Release ${{ env.VERSION }}
+          tag: 1.0.3
+          name: Release 1.0.3
           body: ${{ env.VERSION }}
           makeLatest: true
       - name: Download unity package
@@ -88,5 +95,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_name: a/io.liquiid.wcwunitywebgl.unitypackage # path + filename
+          asset_name: a/wcwunity.unitypackage # path + filename
 
