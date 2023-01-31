@@ -9,7 +9,7 @@
   "licensesUrl": "https://github.com/liquiidio/WcwUnityWebGl",
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.0.0",
-    "io.liquiid.eossharp": "https://github.com/liquiidio/EosSharp-Private.git#upm"
+    "io.liquiid.eossharp": "https://github.com/liquiidio/EosSharp-Private.git#1.0.3"
  },
  "samples": [
   {
