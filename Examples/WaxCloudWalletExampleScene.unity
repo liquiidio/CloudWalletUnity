@@ -347,5 +347,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: UiToolkitExample
       objectReference: {fileID: 0}
+    - target: {fileID: 6123832601263634255, guid: cdf83852f3257514585f263ba84c9687, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cdf83852f3257514585f263ba84c9687, type: 3}

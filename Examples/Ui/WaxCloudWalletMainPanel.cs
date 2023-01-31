@@ -314,6 +314,12 @@ namespace WaxCloudWalletUnity.Examples.Ui
                     throw;
                 }
             };
+
+            _logoutButton.clickable.clicked += () =>
+            {
+                Hide();
+                WaxCloudWalletLoginPanel.Show();
+            };
         }
 
         #endregion
