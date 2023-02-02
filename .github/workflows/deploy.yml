@@ -80,8 +80,8 @@ jobs:
         id: create_release
         uses: ncipollo/release-action@v1.12.0
         with:
-          tag: 1.0.5
-          name: Release 1.0.5
+          tag: 1.0.6
+          name: Release 1.0.6
           body: ${{ env.VERSION }}
           makeLatest: true
       - name: Download unity package
