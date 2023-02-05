@@ -13,6 +13,7 @@ using System.Collections;
 using System.Threading;
 using System.Text;
 using System.Threading.Tasks;
+using Universal.UniversalSDK;
 
 public class WcwErrorEvent
 {
