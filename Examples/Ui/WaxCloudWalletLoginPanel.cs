@@ -6,19 +6,17 @@ namespace WaxCloudWalletUnity.Examples.Ui
 {
     public class WaxCloudWalletLoginPanel : ScreenBase
     {
-        /*
+        /**
          * Child-Controls
          */
 
         private Button _loginButton;
 
 
-        /*
+        /**
          * Fields, Properties
          */
         [SerializeField] internal UiToolkitExample UiToolkitExample;
-        [SerializeField] internal WaxCloudWalletMainPanel WaxCloudWalletMainPanel;
-
 
         void Start()
         {

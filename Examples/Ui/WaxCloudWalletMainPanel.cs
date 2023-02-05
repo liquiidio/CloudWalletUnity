@@ -340,7 +340,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
         private void SetTransferAccountText()
         {
             var toName = "liquidstudio";
-            var memoComment = "Greymass & Liquiid are the best! Thank you.";
+            var memoComment = "WAX & Liquiid";
             var quantityAmount = "0.00001000 WAX";
 
             _toTextField.SetValueWithoutNotify(toName);

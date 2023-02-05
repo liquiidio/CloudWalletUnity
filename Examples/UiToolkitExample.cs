@@ -12,6 +12,7 @@ namespace WaxCloudWalletUnity.Examples
         private WaxCloudWalletPlugin _waxCloudWalletPlugin;
         public WaxCloudWalletLoginPanel WaxCloudWalletLoginPanel;
         public WaxCloudWalletMainPanel WaxCloudWalletMainPanel;
+        public WcwSuccessPanel WcwSuccessPanel;
         public string Account { get; private set; }
 
         public string indexHtmlString;
@@ -25,6 +26,9 @@ namespace WaxCloudWalletUnity.Examples
             {
                 Account = loginEvent.Account;
                 Debug.Log($"{loginEvent.Account} Logged In");
+
+                //show a successful panel here
+                WcwSuccessPanel.Rebind();
                 WaxCloudWalletMainPanel.Rebind(Account);
                 WaxCloudWalletLoginPanel.Hide();
                 WaxCloudWalletMainPanel.Show();
