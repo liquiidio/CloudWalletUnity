@@ -1,0 +1,16 @@
+{
+    "name": "WcwUnityWebgl",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d67d3026e84872940b87f4ea25ccc7fa"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
