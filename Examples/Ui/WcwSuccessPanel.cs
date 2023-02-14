@@ -16,26 +16,25 @@ namespace WaxCloudWalletUnity.Examples.Ui
          * Child-Controls
          */
         private Label _subTitleLabel;
+        private Button _closeViewButton;
 
         private void Start()
         {
             _subTitleLabel = Root.Q<Label>("anchor-link-subtitle-label");
+            _closeViewButton = Root.Q<Button>("close-view-button");
 
-            //OnStart();
+            _closeViewButton.clickable.clicked += Hide;
         }
 
         #region Rebind
         /// <summary>
         /// Rebind and display appropriate message if the user is signing in or performing a transaction
         /// </summary>
-        /// <param name="request"></param>
-        internal void Rebind(/*SigningRequest request*/)
+        /// <param name="loginRequest"></param>
+        internal void Rebind(bool loginRequest)
         {
-            //if (request.IsIdentity())
-            //{
-            //    _subTitleLabel.text = "Login completed.";
-            //}
-            //else _subTitleLabel.text = "Transaction signed";
+            if (loginRequest) _subTitleLabel.text = "Login completed.";
+            else _subTitleLabel.text = "Transaction signed";
 
             StartCoroutine(SetTimeout());
         }
@@ -45,18 +44,22 @@ namespace WaxCloudWalletUnity.Examples.Ui
         #region other
 
         /// <summary>
-        /// Hide this screen after set time has reached the counterDuration
+        /// Hide this screen after 15 sec has reached the counterDuration
         /// </summary>
-        /// <param name="counterDuration"></param>
         /// <returns></returns>
-        private IEnumerator SetTimeout(float counterDuration = 0.5f)
+        private IEnumerator SetTimeout()
         {
-            float _newCounter = 0;
-            while (_newCounter < counterDuration * 2)
+            // Get the current time
+            var startTime = Time.time;
+
+            // Run the coroutine for 15 seconds
+            while (Time.time < startTime + 15f)
             {
-                _newCounter += Time.deltaTime;
+                // Yield every frame
                 yield return null;
             }
+
+            // Coroutine has finished running
             this.Hide();
         }
         #endregion

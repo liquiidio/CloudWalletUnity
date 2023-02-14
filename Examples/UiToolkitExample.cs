@@ -27,10 +27,13 @@ namespace WaxCloudWalletUnity.Examples
                 Account = loginEvent.Account;
                 Debug.Log($"{loginEvent.Account} Logged In");
 
-                //show a successful panel here
-                WcwSuccessPanel.Rebind();
-                WaxCloudWalletMainPanel.Rebind(Account);
+                //show a successful login panel here for 15 sec
+                WcwSuccessPanel.Rebind(true);
+                WcwSuccessPanel.Show();
+
+                //show the main panel here after a successful login
                 WaxCloudWalletLoginPanel.Hide();
+                WaxCloudWalletMainPanel.Rebind(Account);
                 WaxCloudWalletMainPanel.Show();
             };
 
@@ -42,6 +45,10 @@ namespace WaxCloudWalletUnity.Examples
             _waxCloudWalletPlugin.OnTransactionSigned += (signEvent) =>
             {
                 Debug.Log($"Transaction signed: {JsonConvert.SerializeObject(signEvent.Result)}");
+
+                //show a successful Transaction signed panel here for 15 sec
+                WcwSuccessPanel.Rebind(false);
+                WcwSuccessPanel.Show();
             };
 
 #if UNITY_WEBGL
