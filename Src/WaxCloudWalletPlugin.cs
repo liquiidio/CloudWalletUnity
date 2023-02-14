@@ -13,7 +13,10 @@ using System.Collections;
 using System.Threading;
 using System.Text;
 using System.Threading.Tasks;
+
+#if UNITY_ANDROID || UNITY_IOS
 using Universal.UniversalSDK;
+#endif
 
 public class WcwErrorEvent
 {
@@ -254,7 +257,7 @@ public class WaxCloudWalletPlugin : MonoBehaviour
     #endregion
 
     #region Desktop
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && !UNITY_WEBGL
 
     private IntPtr unityWindow;
 
@@ -389,7 +392,7 @@ public class WaxCloudWalletPlugin : MonoBehaviour
 #endif
     #endregion
 
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && !UNITY_WEBGL
     public void StartBrowserCommunication(string url)
     {
         unityWindow = GetActiveWindow();
