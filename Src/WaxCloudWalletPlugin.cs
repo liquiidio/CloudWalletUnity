@@ -227,7 +227,7 @@ public class WaxCloudWalletPlugin : MonoBehaviour
     #endregion
 
     #region Mobile
-#if (UNITY_ANDROID || UNITY_IOS)
+#if (UNITY_ANDROID || UNITY_IOS) 
 
     private UniversalSDK _universalSdk;
 
@@ -235,18 +235,20 @@ public class WaxCloudWalletPlugin : MonoBehaviour
     {
         try
         {
-            _universalSdk.OpenCustomTabView(url, result =>
-            {
-                result.Match(
-                    value =>
-                    {
-                        Debug.Log(value);
-                    },
-                    error =>
-                    {
-                        Debug.LogError(error);
-                    });
-            });
+            //_universalSdk.OpenCustomTabView(url, result =>
+            //{
+            //    result.Match(
+            //        value =>
+            //        {
+            //            Debug.Log(value);
+            //        },
+            //        error =>
+            //        {
+            //            Debug.LogError(error);
+            //        });
+            //});
+
+            _universalSdk.OpenCustomTabView(url);
         }
         catch (Exception e)
         {
@@ -381,14 +383,14 @@ public class WaxCloudWalletPlugin : MonoBehaviour
     }
 
     #region Mobile
-#if UNITY_IOS || UNITY_ANDROID
+#if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
     
     public void StartBrowserCommunication(string url)
     {
         StartHttpListener();
         OpenCustomTabView(url);
     }
-    
+
 #endif
     #endregion
 
