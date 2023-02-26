@@ -17,7 +17,7 @@ A combination of local HttpListeners receiving OAuth-Callbacks from WCW-related 
 This package can be included into your project by either:
 
  1. Installing the package via Unity's Package Manager (UPM) in the editor (recommended).
- 2. Importing the .unitypackage which you can download here.
+ 2. Importing the .unitypackage which you can download [here](https://github.com/liquiidio/WcwUnityWebGl/releases/latest/download/wcwunity.unitypackage).
  3. Manually add the files in this repo.
  4. Installing it via NuGet.
 ---
@@ -31,11 +31,13 @@ In your Unity project:
 
     ![image](https://user-images.githubusercontent.com/74650011/208429298-76fe1101-95f3-4ab0-bbd5-f0a32a1cc652.png)
 
- 3. Enter URL:  `https://github.com/endel/NativeWebSocket.git#upm`
-    // (!TODO!) 
+ 3. Enter URL: `https://github.com/liquiidio/WcwUnityWebGl.git#upm`
+   
 ---
 ### 2. Importing the Unity Package.
-Download the UnityPackage here . Then in your Unity project:
+Download the [UnityPackage here](https://github.com/liquiidio/WcwUnityWebGl/releases/latest/download/wcwunity.unitypackage).
+
+Then in your Unity project:
 
  1. Open up the import a custom package window
     
@@ -50,10 +52,13 @@ Download the UnityPackage here . Then in your Unity project:
      ![image](https://user-images.githubusercontent.com/86061433/217523464-e02b73fa-be34-4ac0-a406-fc4fd310d14c.jpg)
 
 ---
-### 3. Install manually. (!TODO!)
-Download this project there here . Then in your Unity project:
+### 3. Install manually. 
+Download this [project here](https://github.com/liquiidio/WcwUnityWebGl/releases/latest).
 
- 1. Copy the sources from `WCWUnity` into your `Assets` directory.
+  * [zip](https://github.com/liquiidio/WcwUnityWebGl/archive/refs/tags/1.0.10.zip)
+  * [tar.gz](https://github.com/liquiidio/WcwUnityWebGl/archive/refs/tags/1.0.10.tar.gz)
+
+Then in your Unity project, copy the sources from `WCWUnity` into your Unity `Assets` directory.
 
 ---
 
