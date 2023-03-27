@@ -1,11 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using Assets.Packages.WcwUnity.Src;
 using WaxCloudWalletUnity.Examples.Ui;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace WaxCloudWalletUnity.Examples
-{
     public class UiToolkitExample : MonoBehaviour
     {
         // Assign UnityTransport through the Editor
@@ -15,8 +14,8 @@ namespace WaxCloudWalletUnity.Examples
         public WcwSuccessPanel WcwSuccessPanel;
         public string Account { get; private set; }
 
-        public string indexHtmlString;
-        public string waxJsString;
+        public string IndexHtmlString;
+        public string WaxJsString;
 
         public void Start()
         {
@@ -82,6 +81,10 @@ namespace WaxCloudWalletUnity.Examples
         {
             _waxCloudWalletPlugin.Sign(new[] { action });
         }
-    }
 
+        // ask the user to sign the transaction and then broadcast to chain
+        public void BidName(EosSharp.Core.Api.v1.Action action)
+        {
+            _waxCloudWalletPlugin.Sign(new[] { action });
+        }
 }

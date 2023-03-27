@@ -37,7 +37,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);;
                     throw;
                 }
             };

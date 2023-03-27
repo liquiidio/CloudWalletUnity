@@ -155,7 +155,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 {
                     account = "eosio.token",
                     name = "transfer",
-                    authorization = new List<PermissionLevel> { },
+                    authorization = new List<PermissionLevel>(),
                     data = new Dictionary<string, object>
                     {
                         { "from", UiToolkitExample.Account },
@@ -170,7 +170,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);;
                     throw;
                 }
             };
@@ -183,7 +183,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                     name = "buyram",
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission
@@ -204,7 +204,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);;
                     throw;
                 }
             };
@@ -218,7 +218,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
 
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission
@@ -238,7 +238,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);;
                     throw;
                 }
             };
@@ -252,7 +252,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
 
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission
@@ -269,11 +269,11 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 };
                 try
                 {
-                    UiToolkitExample.SellOrBuyRam(action);
+                    UiToolkitExample.BidName(action);
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);
                     throw;
                 }
             };
@@ -288,7 +288,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                     name = "voteproducer",
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission
@@ -310,7 +310,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);
                     throw;
                 }
             };
