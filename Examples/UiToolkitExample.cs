@@ -7,11 +7,10 @@ using UnityEngine;
 
     public class UiToolkitExample : MonoBehaviour
     {
-        // Assign UnityTransport through the Editor
         private WaxCloudWalletPlugin _waxCloudWalletPlugin;
-        public WaxCloudWalletLoginPanel WaxCloudWalletLoginPanel;
-        public WaxCloudWalletMainPanel WaxCloudWalletMainPanel;
-        public WcwSuccessPanel WcwSuccessPanel;
+        [SerializeField] internal WaxCloudWalletLoginPanel _waxCloudWalletLoginPanel;
+        [SerializeField] internal WaxCloudWalletMainPanel _waxCloudWalletMainPanel;
+        [SerializeField] internal WcwSuccessPanel _wcwSuccessPanel;
         public string Account { get; private set; }
 
         public string IndexHtmlString;
@@ -21,24 +20,39 @@ using UnityEngine;
         {
             _waxCloudWalletPlugin = new GameObject(nameof(WaxCloudWalletPlugin)).AddComponent<WaxCloudWalletPlugin>();
 
+            _waxCloudWalletPlugin.OnInit += (initEvent) =>
+            {
+                Debug.Log("WaxJs Initialized");
+            };
+
             _waxCloudWalletPlugin.OnLoggedIn += (loginEvent) =>
             {
                 Account = loginEvent.Account;
                 Debug.Log($"{loginEvent.Account} Logged In");
 
                 //show a successful login panel here for 15 sec
-                WcwSuccessPanel.Rebind(true);
-                WcwSuccessPanel.Show();
+                _wcwSuccessPanel.Rebind(true);
+                _wcwSuccessPanel.Show();
 
                 //show the main panel here after a successful login
-                WaxCloudWalletLoginPanel.Hide();
-                WaxCloudWalletMainPanel.Rebind(Account);
-                WaxCloudWalletMainPanel.Show();
+                _waxCloudWalletLoginPanel.Hide();
+                _waxCloudWalletMainPanel.Rebind(Account, _waxCloudWalletPlugin);
+                _waxCloudWalletMainPanel.Show();
             };
 
             _waxCloudWalletPlugin.OnError += (errorEvent) =>
             {
                 Debug.Log($"Error: {errorEvent.Message}");
+            };
+            
+            _waxCloudWalletPlugin.OnInfoCreated += (infoCreatedEvent) =>
+            {
+                Debug.Log($"Info: {JsonConvert.SerializeObject(infoCreatedEvent.Result)}");
+            };
+
+            _waxCloudWalletPlugin.OnLogout += (logoutEvent) =>
+            {
+                Debug.Log($"LogoutResult: {logoutEvent.LogoutResult}");
             };
 
             _waxCloudWalletPlugin.OnTransactionSigned += (signEvent) =>
@@ -46,8 +60,8 @@ using UnityEngine;
                 Debug.Log($"Transaction signed: {JsonConvert.SerializeObject(signEvent.Result)}");
 
                 //show a successful Transaction signed panel here for 15 sec
-                WcwSuccessPanel.Rebind(false);
-                WcwSuccessPanel.Show();
+                _wcwSuccessPanel.Rebind(false);
+                _wcwSuccessPanel.Show();
             };
 
 #if UNITY_WEBGL

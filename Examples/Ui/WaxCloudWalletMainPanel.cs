@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Assets.Packages.WcwUnity.Src;
 using EosSharp.Core.Api.v1;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -14,7 +15,6 @@ namespace WaxCloudWalletUnity.Examples.Ui
          */
         private Button _changeToBidNameButton;
         private Button _changeToBuyRamButton;
-        private Button _changeToRestoreSessionButton;
         private Button _changeToSellRamButton;
         private Button _changeToTransferButton;
         private Button _changeToVoteButton;
@@ -25,6 +25,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
         private Button _voteButton;
         private Button _sellRamButton;
         private Button _logoutButton;
+        private Button _createInfoButton;
 
         private static TextField _toTextField;
         private static TextField _fromTextField;
@@ -54,6 +55,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
         [SerializeField] internal UiToolkitExample UiToolkitExample;
         [SerializeField] internal WaxCloudWalletLoginPanel WaxCloudWalletLoginPanel;
 
+        private WaxCloudWalletPlugin _waxCloudWalletPlugin;
 
         private void Start()
         {
@@ -62,7 +64,6 @@ namespace WaxCloudWalletUnity.Examples.Ui
             _changeToSellRamButton = Root.Q<Button>("change-to-sell-ram-button");
             _changeToBuyRamButton = Root.Q<Button>("change-to-buy-ram-button");
             _changeToBidNameButton = Root.Q<Button>("change-to-bid-button");
-            _changeToRestoreSessionButton = Root.Q<Button>("change-top-restore-button");
 
             _transferTokenButton = Root.Q<Button>("transfer-token-button");
             _voteButton = Root.Q<Button>("vote-button");
@@ -70,6 +71,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
             _buyRamButton = Root.Q<Button>("buy-ram-button");
             _bidButton = Root.Q<Button>("bid-button");
             _logoutButton = Root.Q<Button>("log-out-button");
+            _createInfoButton = Root.Q<Button>("create-info-button");
 
             _accountLabel = Root.Q<Label>("account-label");
             _loginTitleLabel = Root.Q<Label>("anchor-link-title-label");
@@ -170,7 +172,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError(e);;
+                    Debug.LogError(e);
                     throw;
                 }
             };
@@ -204,7 +206,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError(e);;
+                    Debug.LogError(e);
                     throw;
                 }
             };
@@ -238,7 +240,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError(e);;
+                    Debug.LogError(e);
                     throw;
                 }
             };
@@ -317,8 +319,16 @@ namespace WaxCloudWalletUnity.Examples.Ui
 
             _logoutButton.clickable.clicked += () =>
             {
+                if (_waxCloudWalletPlugin != null && !string.IsNullOrEmpty(_waxCloudWalletPlugin.Account))
+                    _waxCloudWalletPlugin.Logout();
                 Hide();
                 WaxCloudWalletLoginPanel.Show();
+            };
+
+            _createInfoButton.clickable.clicked += () =>
+            {
+                if (_waxCloudWalletPlugin != null && !string.IsNullOrEmpty(_waxCloudWalletPlugin.Account))
+                    _waxCloudWalletPlugin.CreateInfo();
             };
         }
 
@@ -326,11 +336,12 @@ namespace WaxCloudWalletUnity.Examples.Ui
 
         #region Rebind
 
-        public void Rebind(string accountName)
+        public void Rebind(string accountName, WaxCloudWalletPlugin cloudWalletPlugin)
         {
             _fromTextField.value = accountName;
             _accountLabel.text = accountName;
             _receiverAccountTextField.value = accountName;
+            _waxCloudWalletPlugin = cloudWalletPlugin;
         }
 
         #endregion
