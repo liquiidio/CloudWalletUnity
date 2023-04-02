@@ -145,6 +145,12 @@ using Universal.UniversalSDK;
 
     public delegate void OnCreateInfoCallback(System.IntPtr onCreateInfoPtr);
 
+    public delegate void OnLogoutCallback(System.IntPtr onLogoutPtr);
+
+    public delegate void OnWaxProofCallback(System.IntPtr onWaxProofPtr);
+
+    public delegate void OnUserAccountProofCallback(System.IntPtr onUserAccountProofPtr);
+
     [DllImport("__Internal")]
     private static extern void WCWInit(
         string rpcAddress,          // string - The WAX public node API endpoint URL you wish to connect to. Required
