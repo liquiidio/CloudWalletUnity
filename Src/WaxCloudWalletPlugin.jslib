@@ -292,7 +292,7 @@ var WcwUnityWebGlPlugin =  {
         }
     },
 
-     WCWWaxProof: function (nonce, verify) {
+     WCWWaxProof: async function (nonce, verify) {
         if(waxCloudWalletWebglState.Debug){
             console.log("WCWWaxProof called");        
         }
@@ -328,7 +328,7 @@ var WcwUnityWebGlPlugin =  {
         }
     },
 
-    WCWUserAccountProof: function (nonce, description, verify) {
+    WCWUserAccountProof: async function (nonce, description, verify) {
         if(waxCloudWalletWebglState.Debug){
             console.log("WCWUserAccountProof called");        
         }
