@@ -130,12 +130,21 @@ using Universal.UniversalSDK;
         set => _instance._onError = value;
     }
 
-    private Action<WcwCreateInfoEvent> _onCreateInfo;
-    public Action<WcwCreateInfoEvent> OnCreateInfo
+    private Action<WcwCreateInfoEvent> _onInfoCreated;
+    public Action<WcwCreateInfoEvent> OnInfoCreated
     {
-        get => _instance._onCreateInfo;
-        set => _instance._onCreateInfo = value;
+        get => _instance._onInfoCreated;
+        set => _instance._onInfoCreated = value;
     }
+
+    private Action<WcwInitEvent> _onInit;
+    public Action<WcwInitEvent> OnInit
+    {
+        get => _instance._onInit;
+        set => _instance._onInit = value;
+    }
+
+
 
     public delegate void OnLoginCallback(System.IntPtr onLoginPtr);
 
@@ -268,6 +277,26 @@ using Universal.UniversalSDK;
         WCWLogin();
     }
 
+    public void Logout()
+    {
+        WCWLogout();
+    }
+
+    public void CreateInfo()
+    {
+        WCWCreateInfo();
+    }
+
+    public void WaxProof(string nonce, bool verify = true)
+    {
+        WCWWaxProof(nonce, verify);
+    }
+
+    public void UserAccountProof(string nonce, string description, bool verify = true)
+    {
+        WCWUserAccountProof(nonce, description, verify);
+    }
+    
     [MonoPInvokeCallback(typeof(OnLoginCallback))]
     public static void DelegateOnLoginEvent(System.IntPtr onLoginPtr)
     {
@@ -386,7 +415,7 @@ using Universal.UniversalSDK;
             var createInfoEvent = JsonConvert.DeserializeObject<WcwCreateInfoEvent>(msg);
             if (createInfoEvent?.Result != null)
             {
-                _instance.OnTransactionSigned.Invoke(createInfoEvent);
+                _instance.OnInfoCreated.Invoke(createInfoEvent);
             }
 
             var logoutEvent = JsonConvert.DeserializeObject<WcwLogoutEvent>(msg);
