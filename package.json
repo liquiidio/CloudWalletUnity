@@ -10,6 +10,13 @@
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.0.0"
  },
+ "samples": [
+  {
+    "displayName": "Example",
+    "description": "Usage example",
+    "path": "Samples~"
+  }
+ ],
   "author": {
     "name": "Corvin Meyer auf der Heide",
     "email": "corvin@liquiid.io",

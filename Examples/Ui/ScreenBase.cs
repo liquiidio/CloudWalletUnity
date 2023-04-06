@@ -8,12 +8,12 @@ namespace WaxCloudWalletUnity.Examples.Ui
     {
         internal VisualElement Root;
 
-        internal UIDocument Screen;
+        private UIDocument _screen;
 
         private void Awake()
         {
-            Screen = GetComponent<UIDocument>();
-            Root = Screen.rootVisualElement;
+            _screen = GetComponent<UIDocument>();
+            Root = _screen.rootVisualElement;
 
             Hide();
         }

@@ -1,43 +1,71 @@
 using System;
 using System.Threading.Tasks;
+using Assets.Packages.WcwUnity.Src;
 using WaxCloudWalletUnity.Examples.Ui;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace WaxCloudWalletUnity.Examples
-{
     public class UiToolkitExample : MonoBehaviour
     {
-        // Assign UnityTransport through the Editor
         private WaxCloudWalletPlugin _waxCloudWalletPlugin;
-        public LoginView LoginView;
-        public MainView MainView;
+        [SerializeField] internal WaxCloudWalletLoginPanel _waxCloudWalletLoginPanel;
+        [SerializeField] internal WaxCloudWalletMainPanel _waxCloudWalletMainPanel;
+        [SerializeField] internal WcwSuccessPanel _wcwSuccessPanel;
+        [SerializeField] internal MessageBox _messageBox;
         public string Account { get; private set; }
 
-        public string indexHtmlString;
-        public string waxJsString;
+        public string IndexHtmlString;
+        public string WaxJsString;
 
         public void Start()
         {
             _waxCloudWalletPlugin = new GameObject(nameof(WaxCloudWalletPlugin)).AddComponent<WaxCloudWalletPlugin>();
 
+            _waxCloudWalletPlugin.OnInit += (initEvent) =>
+            {
+                Debug.Log("WaxJs Initialized");
+            };
+
             _waxCloudWalletPlugin.OnLoggedIn += (loginEvent) =>
             {
                 Account = loginEvent.Account;
                 Debug.Log($"{loginEvent.Account} Logged In");
-                MainView.Rebind(Account);
-                LoginView.Hide();
-                MainView.Show();
+
+                //show a successful login panel here for 15 sec
+                _wcwSuccessPanel.Rebind(true);
+                _wcwSuccessPanel.Show();
+
+                //show the main panel here after a successful login
+                _waxCloudWalletLoginPanel.Hide();
+                _waxCloudWalletMainPanel.Rebind(Account, _waxCloudWalletPlugin);
+                _waxCloudWalletMainPanel.Show();
             };
 
             _waxCloudWalletPlugin.OnError += (errorEvent) =>
             {
-                Debug.Log($"Error: {errorEvent.Message}");
+                _messageBox.Rebind(errorEvent.Message);
+                _messageBox.Show();
+            };
+            
+            _waxCloudWalletPlugin.OnInfoCreated += (infoCreatedEvent) =>
+            {
+                _messageBox.Rebind(JsonConvert.SerializeObject(infoCreatedEvent.Result));
+                _messageBox.Show();
+            };
+
+            _waxCloudWalletPlugin.OnLogout += (logoutEvent) =>
+            {
+                Debug.Log($"LogoutResult: {logoutEvent.LogoutResult}");
             };
 
             _waxCloudWalletPlugin.OnTransactionSigned += (signEvent) =>
             {
+                _messageBox.Rebind($"Transaction with ID {signEvent.Result.transaction_id} signed");
                 Debug.Log($"Transaction signed: {JsonConvert.SerializeObject(signEvent.Result)}");
+
+                //show a successful Transaction signed panel here for 15 sec
+                _wcwSuccessPanel.Rebind(false);
+                _wcwSuccessPanel.Show();
             };
 
 #if UNITY_WEBGL
@@ -71,6 +99,10 @@ namespace WaxCloudWalletUnity.Examples
         {
             _waxCloudWalletPlugin.Sign(new[] { action });
         }
-    }
 
+        // ask the user to sign the transaction and then broadcast to chain
+        public void BidName(EosSharp.Core.Api.v1.Action action)
+        {
+            _waxCloudWalletPlugin.Sign(new[] { action });
+        }
 }

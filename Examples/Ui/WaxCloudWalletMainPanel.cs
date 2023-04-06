@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
+using Assets.Packages.WcwUnity.Src;
 using EosSharp.Core.Api.v1;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Assets.Packages.WcwUnity.Src; // Do not remove
 using Action = EosSharp.Core.Api.v1.Action;
 
 namespace WaxCloudWalletUnity.Examples.Ui
 {
-    public class MainView : ScreenBase
+    public class WaxCloudWalletMainPanel : ScreenBase
     {
-        /*
+        /**
          * Child-Controls
          */
         private Button _changeToBidNameButton;
         private Button _changeToBuyRamButton;
-        private Button _changeToRestoreSessionButton;
         private Button _changeToSellRamButton;
         private Button _changeToTransferButton;
         private Button _changeToVoteButton;
@@ -25,18 +26,19 @@ namespace WaxCloudWalletUnity.Examples.Ui
         private Button _voteButton;
         private Button _sellRamButton;
         private Button _logoutButton;
+        private Button _createInfoButton;
 
-        private TextField _toTextField;
-        private TextField _fromTextField;
-        private TextField _memoTextField;
-        private TextField _nameToBidTextField;
-        private TextField _quantityTextField;
-        private TextField _receiverAccountTextField;
-        private TextField _userAccountTextField;
-        private TextField _sellRamAmountTextField;
-        private TextField _amountToBuyTextField;
-        private TextField _amountWaxTextField;
-        private TextField _bidAmountTextField;
+        private static TextField _toTextField;
+        private static TextField _fromTextField;
+        private static TextField _memoTextField;
+        private static TextField _nameToBidTextField;
+        private static TextField _quantityTextField;
+        private static TextField _receiverAccountTextField;
+        private static TextField _userAccountTextField;
+        private static TextField _sellRamAmountTextField;
+        private static TextField _amountToBuyTextField;
+        private static TextField _amountWaxTextField;
+        private static TextField _bidAmountTextField;
 
         private VisualElement _sellRamBox;
         private VisualElement _transferTokenBox;
@@ -48,12 +50,13 @@ namespace WaxCloudWalletUnity.Examples.Ui
         private Label _loginTitleLabel;
         private Label _accountLabel;
 
-        /*
+        /**
          * Fields, Properties
          */
         [SerializeField] internal UiToolkitExample UiToolkitExample;
-        [SerializeField] internal LoginView LoginView;
+        [SerializeField] internal WaxCloudWalletLoginPanel WaxCloudWalletLoginPanel;
 
+        private WaxCloudWalletPlugin _waxCloudWalletPlugin;
 
         private void Start()
         {
@@ -62,7 +65,6 @@ namespace WaxCloudWalletUnity.Examples.Ui
             _changeToSellRamButton = Root.Q<Button>("change-to-sell-ram-button");
             _changeToBuyRamButton = Root.Q<Button>("change-to-buy-ram-button");
             _changeToBidNameButton = Root.Q<Button>("change-to-bid-button");
-            _changeToRestoreSessionButton = Root.Q<Button>("change-top-restore-button");
 
             _transferTokenButton = Root.Q<Button>("transfer-token-button");
             _voteButton = Root.Q<Button>("vote-button");
@@ -70,6 +72,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
             _buyRamButton = Root.Q<Button>("buy-ram-button");
             _bidButton = Root.Q<Button>("bid-button");
             _logoutButton = Root.Q<Button>("log-out-button");
+            _createInfoButton = Root.Q<Button>("create-info-button");
 
             _accountLabel = Root.Q<Label>("account-label");
             _loginTitleLabel = Root.Q<Label>("anchor-link-title-label");
@@ -155,7 +158,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 {
                     account = "eosio.token",
                     name = "transfer",
-                    authorization = new List<PermissionLevel> { },
+                    authorization = new List<PermissionLevel>(),
                     data = new Dictionary<string, object>
                     {
                         { "from", UiToolkitExample.Account },
@@ -170,7 +173,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);
                     throw;
                 }
             };
@@ -183,7 +186,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                     name = "buyram",
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission
@@ -204,7 +207,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);
                     throw;
                 }
             };
@@ -218,7 +221,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
 
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission
@@ -238,7 +241,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);
                     throw;
                 }
             };
@@ -252,7 +255,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
 
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission
@@ -269,11 +272,11 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 };
                 try
                 {
-                    UiToolkitExample.SellOrBuyRam(action);
+                    UiToolkitExample.BidName(action);
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);
                     throw;
                 }
             };
@@ -288,7 +291,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                     name = "voteproducer",
                     authorization = new List<PermissionLevel>
                     {
-                        new PermissionLevel()
+                        new()
                         {
                             actor =
                                 "............1", // ............1 will be resolved to the signing accounts permission
@@ -310,9 +313,23 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);
                     throw;
                 }
+            };
+
+            _logoutButton.clickable.clicked += () =>
+            {
+                if (_waxCloudWalletPlugin != null && !string.IsNullOrEmpty(_waxCloudWalletPlugin.Account))
+                    _waxCloudWalletPlugin.Logout();
+                Hide();
+                WaxCloudWalletLoginPanel.Show();
+            };
+
+            _createInfoButton.clickable.clicked += () =>
+            {
+                if (_waxCloudWalletPlugin != null && !string.IsNullOrEmpty(_waxCloudWalletPlugin.Account))
+                    _waxCloudWalletPlugin.CreateInfo();
             };
         }
 
@@ -320,11 +337,12 @@ namespace WaxCloudWalletUnity.Examples.Ui
 
         #region Rebind
 
-        public void Rebind(string accountName)
+        public void Rebind(string accountName, WaxCloudWalletPlugin cloudWalletPlugin)
         {
             _fromTextField.value = accountName;
             _accountLabel.text = accountName;
             _receiverAccountTextField.value = accountName;
+            _waxCloudWalletPlugin = cloudWalletPlugin;
         }
 
         #endregion
@@ -334,7 +352,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
         private void SetTransferAccountText()
         {
             var toName = "liquidstudio";
-            var memoComment = "Greymass & Liquiid are the best! Thank you.";
+            var memoComment = "WAX & Liquiid";
             var quantityAmount = "0.00001000 WAX";
 
             _toTextField.SetValueWithoutNotify(toName);
@@ -367,6 +385,48 @@ namespace WaxCloudWalletUnity.Examples.Ui
             _bidAmountTextField.SetValueWithoutNotify($"{amount}");
         }
 
+        /// <summary>
+        /// Called when ctrl + v is pressed in browser (webgl)
+        /// </summary>
+        /// <param name="pastedText">The pasted text.</param>
+        public void OnBrowserClipboardPaste(string pastedText)
+        {
+            if (string.IsNullOrEmpty(pastedText))
+                return;
+
+            if (_nameToBidTextField != null && _nameToBidTextField.focusController.focusedElement == _nameToBidTextField)
+            {
+                _nameToBidTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_receiverAccountTextField != null && _receiverAccountTextField.focusController.focusedElement == _receiverAccountTextField)
+            {
+                _receiverAccountTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_toTextField != null && _toTextField.focusController.focusedElement == _toTextField)
+            {
+                _toTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_memoTextField != null && _memoTextField.focusController.focusedElement == _memoTextField)
+            {
+                _memoTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_quantityTextField != null && _quantityTextField.focusController.focusedElement == _quantityTextField)
+            {
+                _quantityTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_bidAmountTextField != null && _bidAmountTextField.focusController.focusedElement == _bidAmountTextField)
+            {
+                _bidAmountTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_amountToBuyTextField != null && _amountToBuyTextField.focusController.focusedElement == _amountToBuyTextField)
+            {
+                _amountToBuyTextField.SetValueWithoutNotify(pastedText);
+            }
+            else if (_sellRamAmountTextField != null && _sellRamAmountTextField.focusController.focusedElement == _sellRamAmountTextField)
+            {
+                _sellRamAmountTextField.SetValueWithoutNotify(pastedText);
+            }
+        }
         #endregion
     }
 }

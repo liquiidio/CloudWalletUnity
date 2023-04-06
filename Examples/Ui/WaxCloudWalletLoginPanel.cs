@@ -4,21 +4,19 @@ using UnityEngine.UIElements;
 
 namespace WaxCloudWalletUnity.Examples.Ui
 {
-    public class LoginView : ScreenBase
+    public class WaxCloudWalletLoginPanel : ScreenBase
     {
-        /*
+        /**
          * Child-Controls
          */
 
         private Button _loginButton;
 
 
-        /*
+        /**
          * Fields, Properties
          */
         [SerializeField] internal UiToolkitExample UiToolkitExample;
-        [SerializeField] internal MainView MainView;
-
 
         void Start()
         {
@@ -39,7 +37,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e);
+                    Debug.LogError(e);
                     throw;
                 }
             };

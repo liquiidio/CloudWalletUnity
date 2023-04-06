@@ -3,7 +3,7 @@
 
 <script src='waxjs.js'></script>
 
-<title>waxjsmobile  demo</title>
+<title>waxjsmobile demo</title>
 
 <body>
 
@@ -13,8 +13,7 @@
    const wax = new waxjs.WaxJS({
      rpcEndpoint: 'https://wax.greymass.com',
      tryAutoLogin: true,
-     /*waxSigningURL: 'http://all-access.wax.test:8113',*/
-     /*waxAutoSigningURL: 'http://idm.wax.test:8113/v1/accounts/auto-accept/'*/
+	 // see https://github.com/worldwide-asset-exchange/waxjs for constructor parameters
    });
    const debug = false;
 
@@ -42,6 +41,45 @@
 				}		
 				window.close();
 			}
+			else if(hash.startsWith("#logout")){
+				if(debug)
+					window.alert("logout");
+				try {
+					var preflightResult = await localPreflight();
+					if(preflightResult.ok){
+						await wax.logout();
+						await localCallback(JSON.stringify({ logout_result: "logged out" }), "onlogout");
+					}
+					else{
+						await localCallback(JSON.stringify({ message: "preflight failed" }), "onerror");					
+					}
+				} catch(e) {
+					await localCallback(JSON.stringify({ message: e.message }), "onerror");
+				}		
+				window.close();
+			}
+			else if(hash.startsWith("#create_info")){
+				if(debug)
+					window.alert("create_info");
+				try {
+					if(wax.isTemp){
+						var preflightResult = await localPreflight();
+						if(preflightResult.ok){
+							const result = await wax.createInfo();
+							await localCallback(JSON.stringify({ create_info_result: result }), "oncreateinfo");
+						}
+						else{
+							await localCallback(JSON.stringify({ message: "preflight failed" }), "onerror");					
+						}					
+					}
+					else{
+						await localCallback(JSON.stringify({ message: "Account not temporary" }), "onerror");
+					}
+				} catch(e) {
+					await localCallback(JSON.stringify({ message: e.message }), "onerror");
+				}		
+				window.close();
+			}
 			else if(hash.startsWith("#sign")){
 				if(debug)
 					window.alert("sign");
@@ -62,7 +100,7 @@
 							blocksBehind: 3,
 							expireSeconds: 30
 						});
-						await localCallback(JSON.stringify({ result: result}), "onsigned");
+						await localCallback(JSON.stringify({ sign_result: result}), "onsigned");
 					}
 					else{
 						await localCallback(JSON.stringify({ message: "preflight failed" }), "onerror");					

@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Packages/anchorlinksharp/anchorlinktransportsharp/Src/Transports/UiToolkit/Stylesheets/DarkAnchorLinkStyle.uss?fileID=7433441132597879392&amp;guid=90d8c5ad47eb87147941c55dff626289&amp;type=3#DarkAnchorLinkStyle" />
+    <ui:VisualElement name="screen" style="align-items: center; justify-content: center; height: 100%; width: 100%; flex-direction: row; margin-top: 30px;">
+        <ui:VisualElement name="success-panel" class="success-inner-background" style="background-color: rgb(162, 168, 185); opacity: 1;">
+            <ui:Button display-tooltip-when-elided="true" name="close-view-button" class="anchor-close-button" style="background-image: url(&apos;project://database/Assets/Packages/anchorlinksharp/anchorlinktransportsharp/Assets/icons/cross.png?fileID=2800000&amp;guid=d3c2b951a8081b740ad33f7b599ed8f7&amp;type=3#cross&apos;);" />
+            <ui:VisualElement name="wax-request" class="outer-background-color" style="border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; background-color: rgb(4, 7, 3); opacity: 1;">
+                <ui:VisualElement name="wax-success-logo" style="background-image: url(&apos;project://database/Assets/Packages/anchorlinksharp/anchorlinktransportsharp/Assets/icons/successIcon.png?fileID=2800000&amp;guid=86332b50ca7845d4eaed4f17492ed087&amp;type=3#successIcon&apos;); width: 70px; height: 70px; margin-top: -56px; margin-right: auto; margin-left: auto; -unity-background-image-tint-color: rgba(248, 248, 248, 255);" />
+                <ui:VisualElement name="wax-info" style="align-items: center;">
+                    <ui:Label text="Success!" display-tooltip-when-elided="true" name="anchor-link-title-label" class="anchor-link-title-label" />
+                    <ui:Label text="Login completed." display-tooltip-when-elided="true" name="anchor-link-subtitle-label" class="anchor-link-subtitle-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
