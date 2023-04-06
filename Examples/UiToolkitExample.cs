@@ -11,6 +11,7 @@ using UnityEngine;
         [SerializeField] internal WaxCloudWalletLoginPanel _waxCloudWalletLoginPanel;
         [SerializeField] internal WaxCloudWalletMainPanel _waxCloudWalletMainPanel;
         [SerializeField] internal WcwSuccessPanel _wcwSuccessPanel;
+        [SerializeField] internal MessageBox _messageBox;
         public string Account { get; private set; }
 
         public string IndexHtmlString;
@@ -42,12 +43,14 @@ using UnityEngine;
 
             _waxCloudWalletPlugin.OnError += (errorEvent) =>
             {
-                Debug.Log($"Error: {errorEvent.Message}");
+                _messageBox.Rebind(errorEvent.Message);
+                _messageBox.Show();
             };
             
             _waxCloudWalletPlugin.OnInfoCreated += (infoCreatedEvent) =>
             {
-                Debug.Log($"Info: {JsonConvert.SerializeObject(infoCreatedEvent.Result)}");
+                _messageBox.Rebind(JsonConvert.SerializeObject(infoCreatedEvent.Result));
+                _messageBox.Show();
             };
 
             _waxCloudWalletPlugin.OnLogout += (logoutEvent) =>
@@ -57,6 +60,7 @@ using UnityEngine;
 
             _waxCloudWalletPlugin.OnTransactionSigned += (signEvent) =>
             {
+                _messageBox.Rebind($"Transaction with ID {signEvent.Result.transaction_id} signed");
                 Debug.Log($"Transaction signed: {JsonConvert.SerializeObject(signEvent.Result)}");
 
                 //show a successful Transaction signed panel here for 15 sec
