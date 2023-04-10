@@ -5,6 +5,8 @@
      alt="Liquiid logo" width="280" height="300">
 </div>
 
+---
+
 <div align="center">
 
 [![Deploy](https://github.com/liquiidio/WcwUnity/actions/workflows/deploy.yml/badge.svg)](https://github.com/liquiidio/WcwUnity/actions/workflows/deploy.yml)
