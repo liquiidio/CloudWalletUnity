@@ -4,8 +4,12 @@
  <img src="https://avatars.githubusercontent.com/u/82725791?s=200&v=4" align="center"
      alt="Liquiid logo" width="280" height="300">
 </div>
-[![Build](https://github.com/liquiidio/WcwUnity/actions/workflows/deploy.yml/badge.svg)](https://github.com/liquiidio/WcwUnity/actions/workflows/deploy.yml)
 
+<div align="center">
+
+[![Deploy](https://github.com/liquiidio/WcwUnity/actions/workflows/deploy.yml/badge.svg)](https://github.com/liquiidio/WcwUnity/actions/workflows/deploy.yml)
+
+</div>
 
 # WAX Cloud Wallet (WCW) 
 
