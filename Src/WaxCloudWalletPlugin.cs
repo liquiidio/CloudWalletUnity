@@ -564,6 +564,12 @@ using Universal.UniversalSDK;
 #endif
         }
 
+        /// <summary>Initialize the Cloud Wallet Plugin for Desktop (Windows, MAC, Linux)</summary>
+        /// <param name="localPort">The Port to be used in the HttpListener</param>
+        /// <param name="wcwSigningWebsiteUrl">NOT RECOMMENDED. Allows the Usage of a website/domain instead of localhost, website needs to contain the custom methods from the custom index.html to make Callbacks to the UnityClient. Choosing this options comes with great security risks. Optional.</param>
+        /// <param name="hostLocalWebsite">Default true - set to false if a website/domain should be used instead. Optional.</param>
+        /// <param name="indexHtmlDataPath">Allows to provide a custom path to the index.html to be hosted via the HttpListener on the local device. Optional.</param>
+        /// <param name="waxJsDataPath">Allows to provide a custom path to the waxjs.js-file to be hosted via the HttpListener on the local device. Optional.</param>
         public void InitializeDesktop(uint localPort, string wcwSigningWebsiteUrl, bool hostLocalWebsite = true, string indexHtmlDataPath = null, string waxJsDataPath = null)
         {
 #if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX
@@ -590,7 +596,13 @@ using Universal.UniversalSDK;
 #endif
         }
 
-        public void InitializeMobile(uint localPort, string wcwSigningWebsiteUrl, bool hostLocalWebsite, string indexHtmlString = null, string waxJsString = null)
+        /// <summary>Initialize the Cloud Wallet Plugin for Mobile (Android, iOS)</summary>
+        /// <param name="localPort">The Port to be used in the HttpListener</param>
+        /// <param name="wcwSigningWebsiteUrl">NOT RECOMMENDED. Allows the Usage of a website/domain instead of localhost, website needs to contain the custom methods from the custom index.html to make Callbacks to the UnityClient. Choosing this options comes with great security risks. Optional.</param>
+        /// <param name="hostLocalWebsite">Default true - set to false if a website/domain should be used instead. Optional.</param>
+        /// <param name="indexHtmlString">Allows to provide a custom index.html-file as string to be hosted via the HttpListener on the local device. Needs to be provided as string due to encryption and compression on Mobile Devices. Optional.</param>
+        /// <param name="waxJsString">Allows to provide a custom waxjs.js-file as string to be hosted via the HttpListener on the local device. Needs to be provided as string due to encryption and compression on Mobile Devices. Optional.</param>
+        public void InitializeMobile(uint localPort, string wcwSigningWebsiteUrl, bool hostLocalWebsite = true, string indexHtmlString = null, string waxJsString = null)
         {
 #if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN
             try
