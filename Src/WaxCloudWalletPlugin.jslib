@@ -9,7 +9,7 @@ var WcwUnityWebGlPlugin =  {
         OnLogout: null,
         OnWaxProof: null,
         OnUserAccountProof: null,
-        Debug: true
+        Debug: false
     },
 
     WCWInit: function( 
@@ -195,7 +195,7 @@ var WcwUnityWebGlPlugin =  {
                     expireSeconds: 30
                 });
 
-                var msg = JSON.stringify({ result: result });
+                var msg = JSON.stringify({ sign_result: result });
 			    var length = lengthBytesUTF8(msg) + 1;
 			    var buffer = _malloc(length);
 			    stringToUTF8(msg, buffer, length);

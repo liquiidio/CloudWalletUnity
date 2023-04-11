@@ -61,6 +61,7 @@ using UnityEngine;
             _waxCloudWalletPlugin.OnTransactionSigned += (signEvent) =>
             {
                 _messageBox.Rebind($"Transaction with ID {signEvent.Result.transaction_id} signed");
+                _messageBox.Show();
                 Debug.Log($"Transaction signed: {JsonConvert.SerializeObject(signEvent.Result)}");
 
                 //show a successful Transaction signed panel here for 15 sec
