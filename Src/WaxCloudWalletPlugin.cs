@@ -146,6 +146,8 @@ using Universal.UniversalSDK;
 
 
 
+    public delegate void OnInitCallback(System.IntPtr onLoginPtr);
+
     public delegate void OnLoginCallback(System.IntPtr onLoginPtr);
 
     public delegate void OnSignCallback(System.IntPtr onSignPtr);
@@ -184,6 +186,9 @@ using Universal.UniversalSDK;
                     );
 
     [DllImport("__Internal")]
+    private static extern void WCWOnInit();   
+    
+    [DllImport("__Internal")]
     private static extern void WCWLogin();
 
     [DllImport("__Internal")]
@@ -201,6 +206,9 @@ using Universal.UniversalSDK;
     [DllImport("__Internal")]
     private static extern void WCWUserAccountProof(string nonce, string description, bool verify = true);
 
+    [DllImport("__Internal")]
+    private static extern void WCWSetOnInit(OnInitCallback onInitCallback);
+    
     [DllImport("__Internal")]
     private static extern void WCWSetOnLogin(OnLoginCallback onLoginCallback);
 
@@ -305,6 +313,18 @@ using Universal.UniversalSDK;
         var msg = Marshal.PtrToStringAuto(onLoginPtr);
         if (msg?.Length == 0 || msg == null)
             throw new ApplicationException("LoginCallback Message is null");
+
+        _instance._eventList.Add(string.Copy(msg));
+    }   
+    
+    [MonoPInvokeCallback(typeof(OnInitCallback))]
+    public static void DelegateOnInitEvent(System.IntPtr onInitPtr)
+    {
+        Debug.Log("DelegateOnInitEvent called");
+
+        var msg = Marshal.PtrToStringAuto(onInitPtr);
+        if (msg?.Length == 0 || msg == null)
+            throw new ApplicationException("InitCallback Message is null");
 
         _instance._eventList.Add(string.Copy(msg));
     }
@@ -538,6 +558,7 @@ using Universal.UniversalSDK;
         WCWSetOnLogout(DelegateOnLogoutEvent);
         WCWSetOnWaxProof(DelegateOnWaxProofEvent);
         WCWSetOnUserAccountProof(DelegateOnUserAccountProofEvent);
+        WCWSetOnInit(DelegateOnInitEvent);
         WCWInit(rpcAddress, tryAutoLogin, userAccount, pubKeys, apiSigner, eosApiArgs, freeBandwidth, feeFallback, verifyTx, metricsUrl, returnTempAccounts);
         _instance._isInitialized = true;
 #endif
