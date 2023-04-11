@@ -372,13 +372,20 @@ var WcwUnityWebGlPlugin =  {
         }
     },
 
+    WCWSetOnInit: function (callback) {
+        if(waxCloudWalletWebglState.Debug){
+            console.log("WaxSetOnInit called");        
+        }
+        waxCloudWalletWebglState.OnInit = callback;
+    },
+
     WCWSetOnLogin: function (callback) {
         if(waxCloudWalletWebglState.Debug){
             console.log("WaxSetOnLogin called");        
         }
         waxCloudWalletWebglState.OnLogin = callback;
     },
-
+	
     WCWSetOnSign: function (callback) {
         if(waxCloudWalletWebglState.Debug){
             console.log("WaxSetOnSign called");        

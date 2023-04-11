@@ -551,6 +551,7 @@ using Universal.UniversalSDK;
             bool returnTempAccounts = false
         ) {
 #if UNITY_WEBGL
+        WCWSetOnInit(DelegateOnInitEvent);
         WCWSetOnLogin(DelegateOnLoginEvent);
         WCWSetOnSign(DelegateOnSignEvent);
         WCWSetOnError(DelegateOnErrorEvent);
@@ -558,7 +559,6 @@ using Universal.UniversalSDK;
         WCWSetOnLogout(DelegateOnLogoutEvent);
         WCWSetOnWaxProof(DelegateOnWaxProofEvent);
         WCWSetOnUserAccountProof(DelegateOnUserAccountProofEvent);
-        WCWSetOnInit(DelegateOnInitEvent);
         WCWInit(rpcAddress, tryAutoLogin, userAccount, pubKeys, apiSigner, eosApiArgs, freeBandwidth, feeFallback, verifyTx, metricsUrl, returnTempAccounts);
         _instance._isInitialized = true;
 #endif
