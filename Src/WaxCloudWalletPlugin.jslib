@@ -102,6 +102,7 @@ var WcwUnityWebGlPlugin =  {
                 console.log("waxJsConfig: " + JSON.stringify(waxJsConfig));
             }
 			
+			var msg = JSON.stringify({ init_result: "WaxJs initialized" });
 			var length = lengthBytesUTF8(msg) + 1;
 			var buffer = _malloc(length);
 			stringToUTF8(msg, buffer, length);
