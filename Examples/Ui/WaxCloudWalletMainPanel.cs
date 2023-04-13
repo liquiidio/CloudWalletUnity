@@ -56,7 +56,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
         [SerializeField] internal UiToolkitExample UiToolkitExample;
         [SerializeField] internal WaxCloudWalletLoginPanel WaxCloudWalletLoginPanel;
 
-        private WaxCloudWalletPlugin _waxCloudWalletPlugin;
+        private CloudWalletPlugin _cloudWalletPlugin;
 
         private void Start()
         {
@@ -320,16 +320,16 @@ namespace WaxCloudWalletUnity.Examples.Ui
 
             _logoutButton.clickable.clicked += () =>
             {
-                if (_waxCloudWalletPlugin != null && !string.IsNullOrEmpty(_waxCloudWalletPlugin.Account))
-                    _waxCloudWalletPlugin.Logout();
+                if (_cloudWalletPlugin != null && !string.IsNullOrEmpty(_cloudWalletPlugin.Account))
+                    _cloudWalletPlugin.Logout();
                 Hide();
                 WaxCloudWalletLoginPanel.Show();
             };
 
             _createInfoButton.clickable.clicked += () =>
             {
-                if (_waxCloudWalletPlugin != null && !string.IsNullOrEmpty(_waxCloudWalletPlugin.Account))
-                    _waxCloudWalletPlugin.CreateInfo();
+                if (_cloudWalletPlugin != null && !string.IsNullOrEmpty(_cloudWalletPlugin.Account))
+                    _cloudWalletPlugin.CreateInfo();
             };
         }
 
@@ -337,12 +337,12 @@ namespace WaxCloudWalletUnity.Examples.Ui
 
         #region Rebind
 
-        public void Rebind(string accountName, WaxCloudWalletPlugin cloudWalletPlugin)
+        public void Rebind(string accountName, CloudWalletPlugin cloudWalletPlugin)
         {
             _fromTextField.value = accountName;
             _accountLabel.text = accountName;
             _receiverAccountTextField.value = accountName;
-            _waxCloudWalletPlugin = cloudWalletPlugin;
+            _cloudWalletPlugin = cloudWalletPlugin;
         }
 
         #endregion

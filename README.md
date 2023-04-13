@@ -5,10 +5,9 @@
      alt="Liquiid logo" width="280" height="300">
 </div>
 
-# WAX Cloud Wallet (WCW) (!TODO ALL!)
+# Cloud Wallet Plugin
 
-A combination of local HttpListeners receiving OAuth-Callbacks from WCW-related web-adresses opened through the WebView-Plugin, gathering necessary initial information like OAuth-Tokens, followed by regular non-browser-based (no WebView needed) communication with the WCW-API/Server.
-
+A native integration of the Wax Cloud Wallet compatible with all major Build Targets (WebGL, Windows, Mac, Linux, Android, iOS) without relying on WebViews.
 
 # Installation
 

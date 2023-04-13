@@ -1,7 +1,6 @@
 var WcwUnityWebGlPlugin =  {
     $waxCloudWalletWebglState: {
         wax : null,
-		OnInit: null,
         OnLogin: null,
         OnSign: null,
         OnError: null,
@@ -9,8 +8,11 @@ var WcwUnityWebGlPlugin =  {
         OnLogout: null,
         OnWaxProof: null,
         OnUserAccountProof: null,
-        Debug: false
+        Debug: true
     },
+
+// XXX waxSigningURL XXX
+// XXX waxAutoSigningURL XXX
 
     WCWInit: function( 
         rpcAddress,          // string - The WAX public node API endpoint URL you wish to connect to. Required
@@ -33,9 +35,6 @@ var WcwUnityWebGlPlugin =  {
                              // but it will also return an extra boolean flag called isTemp. If this flag is true it is a temporary account, it does not exist in the blockchain yet. 
                              // If this constructor option is false then only accounts which have been activated and have a blockchain account will be returned.
     ){
-	
-		//verifyTx not supported because we can't pass a verification-method here
-		
         if(waxCloudWalletWebglState.Debug){
             console.log("init called");
         }
@@ -89,6 +88,8 @@ var WcwUnityWebGlPlugin =  {
                 console.log("returnTempAccounts = " + returnTempAccounts.toString());
             }
 
+// XXX verifyTx - TODO
+
             if(metricsUrlString !== ""){
                 if(waxCloudWalletWebglState.Debug){
                     console.log("metricsUrlString != null -> " + metricsUrlString);
@@ -96,23 +97,12 @@ var WcwUnityWebGlPlugin =  {
                 waxJsConfig.metricsUrl = metricsUrlString;
             }
 
+
             waxCloudWalletWebglState.wax = new waxjs.WaxJS(waxJsConfig);
             if(waxCloudWalletWebglState.Debug){
                 console.log("wax Initialized!");
                 console.log("waxJsConfig: " + JSON.stringify(waxJsConfig));
             }
-			
-			var msg = JSON.stringify({ init_result: "WaxJs initialized" });
-			var length = lengthBytesUTF8(msg) + 1;
-			var buffer = _malloc(length);
-			stringToUTF8(msg, buffer, length);
-
-			try {
-				Module.dynCall_vi(waxCloudWalletWebglState.OnInit, buffer);
-			} finally {
-				_free(buffer);
-			}
-			
         } catch(e) {
             if(waxCloudWalletWebglState.Debug){
                 console.log(e.message);
@@ -195,7 +185,7 @@ var WcwUnityWebGlPlugin =  {
                     expireSeconds: 30
                 });
 
-                var msg = JSON.stringify({ sign_result: result });
+                var msg = JSON.stringify({ result: result });
 			    var length = lengthBytesUTF8(msg) + 1;
 			    var buffer = _malloc(length);
 			    stringToUTF8(msg, buffer, length);
@@ -372,20 +362,13 @@ var WcwUnityWebGlPlugin =  {
         }
     },
 
-    WCWSetOnInit: function (callback) {
-        if(waxCloudWalletWebglState.Debug){
-            console.log("WaxSetOnInit called");        
-        }
-        waxCloudWalletWebglState.OnInit = callback;
-    },
-
     WCWSetOnLogin: function (callback) {
         if(waxCloudWalletWebglState.Debug){
             console.log("WaxSetOnLogin called");        
         }
         waxCloudWalletWebglState.OnLogin = callback;
     },
-	
+
     WCWSetOnSign: function (callback) {
         if(waxCloudWalletWebglState.Debug){
             console.log("WaxSetOnSign called");        
