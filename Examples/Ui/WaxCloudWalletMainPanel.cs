@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Assets.Packages.WcwUnity.Src;
+using Assets.Packages.CloudWalletUnity.Src;// Do not remove
 using EosSharp.Core.Api.v1;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Assets.Packages.WcwUnity.Src; // Do not remove
 using Action = EosSharp.Core.Api.v1.Action;
 
 namespace WaxCloudWalletUnity.Examples.Ui
