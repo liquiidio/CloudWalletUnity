@@ -1,4 +1,4 @@
-var WcwUnityWebGlPlugin =  {
+var CloudWalletUnityWebGlPlugin =  {
     $waxCloudWalletWebglState: {
         wax : null,
         OnLogin: null,
@@ -14,7 +14,7 @@ var WcwUnityWebGlPlugin =  {
 // XXX waxSigningURL XXX
 // XXX waxAutoSigningURL XXX
 
-    WCWInit: function( 
+    CloudWalletInit: function( 
         rpcAddress,          // string - The WAX public node API endpoint URL you wish to connect to. Required
         tryAutoLogin,        // bool - Always attempt to autologin when your dapp starts up. Default true
         userAccount,         // string - User account to start up with. Optional
@@ -88,8 +88,6 @@ var WcwUnityWebGlPlugin =  {
                 console.log("returnTempAccounts = " + returnTempAccounts.toString());
             }
 
-// XXX verifyTx - TODO
-
             if(metricsUrlString !== ""){
                 if(waxCloudWalletWebglState.Debug){
                     console.log("metricsUrlString != null -> " + metricsUrlString);
@@ -121,7 +119,7 @@ var WcwUnityWebGlPlugin =  {
         }
     },
 
-    WCWLogin: async function () {
+    CloudWalletLogin: async function () {
         if(waxCloudWalletWebglState.Debug){
             console.log("Login called");        
         }
@@ -160,7 +158,7 @@ var WcwUnityWebGlPlugin =  {
         }
     },
 
-    WCWSign: async function (actionDataJsonString) {
+    CloudWalletSign: async function (actionDataJsonString) {
         if(waxCloudWalletWebglState.Debug){
             console.log("Sign called");        
             console.log(UTF8ToString(actionDataJsonString));
@@ -219,7 +217,7 @@ var WcwUnityWebGlPlugin =  {
         }
     },
 
-    WCWCreateInfo: async function () {
+    CloudWalletCreateInfo: async function () {
         if(waxCloudWalletWebglState.Debug){
             console.log("createInfo called");        
         }
@@ -258,7 +256,7 @@ var WcwUnityWebGlPlugin =  {
         }
     },
 
-    WCWLogout: async function () {
+    CloudWalletLogout: async function () {
         if(waxCloudWalletWebglState.Debug){
             console.log("Logout called");        
         }
@@ -292,9 +290,9 @@ var WcwUnityWebGlPlugin =  {
         }
     },
 
-     WCWWaxProof: async function (nonce, verify) {
+     CloudWalletWaxProof: async function (nonce, verify) {
         if(waxCloudWalletWebglState.Debug){
-            console.log("WCWWaxProof called");        
+            console.log("CloudWalletWaxProof called");        
         }
 
         var msg = "";
@@ -328,9 +326,9 @@ var WcwUnityWebGlPlugin =  {
         }
     },
 
-    WCWUserAccountProof: async function (nonce, description, verify) {
+    CloudWalletUserAccountProof: async function (nonce, description, verify) {
         if(waxCloudWalletWebglState.Debug){
-            console.log("WCWUserAccountProof called");        
+            console.log("CloudWalletUserAccountProof called");        
         }
 
         var msg = "";
@@ -362,55 +360,55 @@ var WcwUnityWebGlPlugin =  {
         }
     },
 
-    WCWSetOnLogin: function (callback) {
+    CloudWalletSetOnLogin: function (callback) {
         if(waxCloudWalletWebglState.Debug){
             console.log("WaxSetOnLogin called");        
         }
         waxCloudWalletWebglState.OnLogin = callback;
     },
 
-    WCWSetOnSign: function (callback) {
+    CloudWalletSetOnSign: function (callback) {
         if(waxCloudWalletWebglState.Debug){
             console.log("WaxSetOnSign called");        
         }
         waxCloudWalletWebglState.OnSign = callback;
     },
 
-    WCWSetOnError: function (callback) {
+    CloudWalletSetOnError: function (callback) {
         if(waxCloudWalletWebglState.Debug){
             console.log("WaxSetOnError called");        
         }
         waxCloudWalletWebglState.OnError = callback;
     },
 
-    WCWSetOnCreateInfo: function (callback) {
+    CloudWalletSetOnCreateInfo: function (callback) {
         if(waxCloudWalletWebglState.Debug){
-            console.log("WCWCreateInfo called");        
+            console.log("CloudWalletCreateInfo called");        
         }
         waxCloudWalletWebglState.OnCreateInfo = callback;
     },
 
-    WCWSetOnLogout: function (callback) {
+    CloudWalletSetOnLogout: function (callback) {
         if(waxCloudWalletWebglState.Debug){
-            console.log("WCWSetOnLogout called");        
+            console.log("CloudWalletSetOnLogout called");        
         }
         waxCloudWalletWebglState.OnLogout = callback;
     },
 
-    WCWSetOnWaxProof: function (callback) {
+    CloudWalletSetOnWaxProof: function (callback) {
         if(waxCloudWalletWebglState.Debug){
-            console.log("WCWSetOnWaxProof called");        
+            console.log("CloudWalletSetOnWaxProof called");        
         }
         waxCloudWalletWebglState.OnWaxProof = callback;
     },
 
-    WCWSetOnUserAccountProof: function (callback) {
+    CloudWalletSetOnUserAccountProof: function (callback) {
         if(waxCloudWalletWebglState.Debug){
-            console.log("WCWSetOnUserAccountProof called");        
+            console.log("CloudWalletSetOnUserAccountProof called");        
         }
         waxCloudWalletWebglState.OnUserAccountProof = callback;
     },
 };
 
-autoAddDeps(WcwUnityWebGlPlugin, '$waxCloudWalletWebglState');
-mergeInto(LibraryManager.library, WcwUnityWebGlPlugin);
+autoAddDeps(CloudWalletUnityWebGlPlugin, '$waxCloudWalletWebglState');
+mergeInto(LibraryManager.library, CloudWalletUnityWebGlPlugin);
