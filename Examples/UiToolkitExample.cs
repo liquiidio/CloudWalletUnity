@@ -69,11 +69,11 @@ using UnityEngine;
             };
 
 #if UNITY_WEBGL
-            _waxCloudWalletPlugin.InitializeWebGl("https://wax.greymass.com");
+            _cloudWalletPlugin.InitializeWebGl("https://wax.greymass.com");
 #elif UNTIY_ANDROID || UNITY_IOS
-            _waxCloudWalletPlugin.InitializeMobile(1234, "http://127.0.0.1:1234/index.html", true, indexHtmlString, waxJsString);
+            _cloudWalletPlugin.InitializeMobile(1234, "http://127.0.0.1:1234/index.html", true, indexHtmlString, waxJsString);
 #else
-            _cloudWalletPlugin.InitializeDesktop(1234, "http://127.0.0.1:1234/index.html");
+        _cloudWalletPlugin.InitializeDesktop(1234, "http://127.0.0.1:1234/index.html");
 #endif
         }
 
