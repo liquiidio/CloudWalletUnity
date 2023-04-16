@@ -692,13 +692,6 @@ using Universal.UniversalSDK;
             StartBrowserCommunication(BuildUrl("sign", JsonConvert.SerializeObject(actions)));
         }
 
-        private static Dictionary<string, TValue> ToDictionary<TValue>(object obj)
-        {
-            var json = JsonConvert.SerializeObject(obj);
-            var dictionary = JsonConvert.DeserializeObject<Dictionary<string, TValue>>(json);
-            return dictionary;
-        }
-
         public void Login()
         {
             StartBrowserCommunication(BuildUrl("login"));
@@ -960,6 +953,13 @@ using Universal.UniversalSDK;
         }
 
 #endif
+        private static Dictionary<string, TValue> ToDictionary<TValue>(object obj)
+        {
+            var json = JsonConvert.SerializeObject(obj);
+            var dictionary = JsonConvert.DeserializeObject<Dictionary<string, TValue>>(json);
+            return dictionary;
+        }
+
         #endregion
     }
 }
