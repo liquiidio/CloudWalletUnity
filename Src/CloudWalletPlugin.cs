@@ -260,12 +260,19 @@ using Universal.UniversalSDK;
         {
             action.authorization = new List<PermissionLevel>()
             {
-                new PermissionLevel()
+                new()
                 {
                     actor = _account,
-                    permission = "active"
+                    permission = "active" // permission is always active in Cloud Wallet
                 }
             };
+
+            var placeholderDict1 = ToDictionary<object>(action.data);
+            var placeholderDict2 = placeholderDict1.ToDictionary(keyValuePair => keyValuePair.Key,
+                keyValuePair => keyValuePair.Value is string and PlaceholderName ? _account : keyValuePair.Value);
+
+            var dataObj = JsonConvert.DeserializeObject<object>(JsonConvert.SerializeObject(placeholderDict2));
+            action.data = dataObj;
         }
 
         // TODO, [JsonIgnore] hex_data in EosSharp.Core.Action
@@ -673,8 +680,6 @@ using Universal.UniversalSDK;
                         permission = "active" // permission is always active in Cloud Wallet
                     }
                 };
-                if (action.account == PlaceholderName)
-                    action.account = _account;
 
                 var placeholderDict1 = ToDictionary<object>(action.data);
                 var placeholderDict2 = placeholderDict1.ToDictionary(keyValuePair => keyValuePair.Key,
