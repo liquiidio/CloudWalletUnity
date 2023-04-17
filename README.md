@@ -6,6 +6,13 @@
 </div>
 
 # Cloud Wallet Plugin
+---
+
+<div align="center">
+
+[![Deploy](https://github.com/liquiidio/WcwUnity/actions/workflows/deploy.yml/badge.svg)](https://github.com/liquiidio/WcwUnity/actions/workflows/deploy.yml)
+
+</div>
 
 A native integration of the Wax Cloud Wallet compatible with all major Build Targets (WebGL, Windows, Mac, Linux, Android, iOS) without relying on WebViews.
 
@@ -16,7 +23,7 @@ A native integration of the Wax Cloud Wallet compatible with all major Build Tar
 This package can be included into your project by either:
 
  1. Installing the package via Unity's Package Manager (UPM) in the editor (recommended).
- 2. Importing the .unitypackage which you can download here.
+ 2. Importing the .unitypackage which you can download [here](https://github.com/liquiidio/WcwUnityWebGl/releases/latest/download/wcwunity.unitypackage).
  3. Manually add the files in this repo.
  4. Installing it via NuGet.
 ---
@@ -30,120 +37,130 @@ In your Unity project:
 
     ![image](https://user-images.githubusercontent.com/74650011/208429298-76fe1101-95f3-4ab0-bbd5-f0a32a1cc652.png)
 
- 3. Enter URL:  `https://github.com/endel/NativeWebSocket.git#upm`
-    // (!TODO!) ADD CORRECT LINK AND RELEVANT SCREENSHOT
+ 3. Enter URL: `https://github.com/liquiidio/WcwUnityWebGl.git#upm`
+   
 ---
 ### 2. Importing the Unity Package.
-Download the UnityPackage here <<-- (Hyper link this). Then in your Unity project:
+Download the [UnityPackage here](https://github.com/liquiidio/WcwUnityWebGl/releases/latest/download/wcwunity.unitypackage).
+
+Then in your Unity project:
 
  1. Open up the import a custom package window
     
     ![image](https://user-images.githubusercontent.com/74650011/208430044-caf91dd9-111e-4224-8441-95d116dbec3b.png)
 
- 3. Navigate to where you downloaded the file and open it.
+ 2. Navigate to where you downloaded the file and open it.
     
-    ![image](https://user-images.githubusercontent.com/74650011/208430782-871b64c5-fa00-44bf-96c3-685743b77a63.png)
+      ![image](https://user-images.githubusercontent.com/86061433/217523340-9b9ec00f-8e03-40dd-9647-52796371fedc.jpg)
 
- 4. Check all the relevant files needed (if this is a first time import, just select ALL) and click on import.
-   (!TODO!)
-   // ADD THE CORRECT SCREENSHOT FOR IMPORT WINDOW
+ 3. Check all the relevant files needed (if this is a first time import, just select ALL) and click on import.
    
-   ![image](https://user-images.githubusercontent.com/74650011/208431004-953e07d1-325d-4e9a-a4e1-fc845de06fdd.png)
+     ![image](https://user-images.githubusercontent.com/86061433/217523464-e02b73fa-be34-4ac0-a406-fc4fd310d14c.jpg)
 
 ---
-### 3. Install manually. (!TODO!)
-Download this project there here <<-- (Hyper link this to the zip download). Then in your Unity project:
+### 3. Install manually. 
+Download this [project here](https://github.com/liquiidio/WcwUnityWebGl/releases/latest).
 
- 1. Copy the sources from `NativeWebSocket/Assets/WebSocket` into your `Assets` directory.
+  * [zip](https://github.com/liquiidio/WcwUnityWebGl/archive/refs/tags/1.0.10.zip)
+  * [tar.gz](https://github.com/liquiidio/WcwUnityWebGl/archive/refs/tags/1.0.10.tar.gz)
+
+Then in your Unity project, copy the sources from `WCWUnity` into your Unity `Assets` directory.
 
 ---
-### 4. Install via NuGet (!TODO!)
-<img src="https://media.tenor.com/SLXlt36s35kAAAAC/scooby-doo-witch-doctor.gif" align="center"
-     alt="Liquiid logo">
 
-# Usage (!TODO!)
+# Usage 
+## Examples
 
-.NET and Unity3D-compatible (Desktop, Mobile, WebGL) ApiClient for the different APIs. 
-Endpoints have its own set of parameters that you may build up and pass in to the relevant function.
+### Quick Start
 
-### Examples (!TODO!)
+1. Create a new script inheriting from MonoBehaviour
+2. Add a member of type WaxCloudWalletPlugin as well as a string to store the name of the user that is logged in.
+3. In the Start-method, instantiate/initialize the CloudWalletPlugin.
+4. Assign the EventHandlers/Callbacks allowing the CloudWalletPlugin to notify your Script about events and related Data 
+5. Initialize the CloudWalletPlugin. This will start the communication with the Browser and create the binding between your local script and the wax-js running in the Browser.
 
- Based on the different endpoints
- 
 ```csharp
-    new AnchorLink(new LinkOptions()
-                {
-                    Transport = this.Transport,
-                    // Uncomment this for and EOS session
-                    //ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906",
-                    //Rpc = "https://eos.greymass.com",
+private WaxCloudWalletPlugin _waxCloudWalletPlugin;
+public string Account { get; private set; }
+
+public void Start()
+{
+	// Instantiate the WaxCloudWalletPlugin
+	_waxCloudWalletPlugin = new GameObject(nameof(WaxCloudWalletPlugin)).AddComponent<WaxCloudWalletPlugin>();
+
+	// Assign Event-Handlers/Callbacks
+	_waxCloudWalletPlugin.OnLoggedIn += (loginEvent) =>
+	{
+		Account = loginEvent.Account;
+		Debug.Log($"{loginEvent.Account} Logged In");
+	};
+
+	_waxCloudWalletPlugin.OnError += (errorEvent) =>
+	{
+		Debug.Log($"Error: {errorEvent.Message}");
+	};
+
+	_waxCloudWalletPlugin.OnTransactionSigned += (signEvent) =>
+	{
+		Debug.Log($"Transaction signed: {JsonConvert.SerializeObject(signEvent.Result)}");
+	};
+	
+	// Inititalize the WebGl binding while passign the RPC-Endpoint of your Choice
+	_waxCloudWalletPlugin.InitializeWebGl("https://wax.greymass.com");
+}
 ```
-<br>
+
+### Login
+
+
+1. Logging in to the Wax Cloud Wallet Plugin is as simple as calling the Login-Method on [the previously](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_a) initialized WaxCloudWalletPlugin-instance.
+2. Once the Login-Method is called, the user will be prompted with the standard Wax Cloud Wallet Login prompt and will be requested to follow the typical Login/Authentication-Scheme.
+
 ```csharp
-    // WAX session
-            ChainId = "1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4",
-            Rpc = "https://api.wax.liquidstudios.io",
-            ZlibProvider = new NetZlibProvider(),
-            Storage = new PlayerPrefsStorage()
-        });
+public void Login()
+{
+	_waxCloudWalletPlugin.Login();
+}
 ```
----
-## Additional examples (!TODO!)
-These are examples based on the specific plugin/package usage.
-Achor link - Creating and signing different kinds of transactions.  
 
-### An example (!TODO!)
+### Token Transfer
 
-AnchorLink
+1. The following example shows how a Token Transfer Action can be created and passed to the Sign-Method of [the previously](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_a) initialized WaxCloudWalletPlugin-Object.
 
-Token Transfer 
 ```csharp
-    // transfer tokens using a session
-        private async Task Transfer(string frmAcc, string toAcc, string qnty, string memo)
-        {
-            var action = new EosSharp.Core.Api.v1.Action()
-            {
-                account = "eosio.token",
-                name = "transfer",
-                authorization = new List<PermissionLevel>() { _session.Auth },
-                data = new Dictionary<string, object>
-                {
-                    {"from", frmAcc},
-                    {"to", toAcc},
-                    {"quantity", qnty},
-                    {"memo", memo}
-                }
-            };
-
-            //Debug.Log($"Session {_session.Identifier}");
-            //Debug.Log($"Link: {_link.ChainId}");
-
-            try
-            {
-                var transactResult = await _link.Transact(new TransactArgs() { Action = action });
-                // OR (see next line)
-                //var transactResult = await _session.Transact(new TransactArgs() { Action = action });
-                Debug.Log($"Transaction broadcast! {transactResult.Processed}");
-
-                waitCoroutine = StartCoroutine(SwitchPanels(Transport.currentPanel, CustomActionsPanel, 1.5f));
-
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e);
-                throw;
-            }
-        }
+   // transfer tokens using a session
+      private async Task Transfer(string frmAcc, string toAcc, string qnty, string memo)
+      {
+          var action = new EosSharp.Core.Api.v1.Action()
+          {
+              account = "eosio.token",
+              name = "transfer",
+              authorization = new List<PermissionLevel>() { _session.Auth },
+              data = new Dictionary<string, object>
+              {
+                  {"from", frmAcc},
+                  {"to", toAcc},
+                  {"quantity", qnty},
+                  {"memo", memo}
+              }
+          };
+		
+	  // Sign 
+	 _waxCloudWalletPlugin.Sign(new[] { action });
+	}
 ```
-Link? (!TODO!)
+### Transact
 
-- NFT Transfer - link
-- Create Permission - link
-- Get Balanaces - link
+1. Transacting/Signing Transactions with the Wax Cloud Wallet Plugin is as simple as calling the Sign-Method on [the previously](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_a) initialized WaxCloudWalletPlugin-instance while passing a EosSharp Action Object.
+2. To be able to perform a transaction, a user needs to [login](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_b) first. Once a user has been logged in, the Plugin will automatically use the the logged in user to sign transactions.
+3. Once the Sign-Method is called (while a user has previously logged in and a valid Action Object has been passed) the user will automatically be prompted with the typical Wax Cloud Authentication and Signing-Scheme.
+4. If "Auto-Signing" is enabled, transactions will be signed automatically.
+5. Immediately a Transaction-Signing is successful, the OnTransactionSigned-Handler will be called (see the [Quick-Start](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_a) example)
+6. If an error occurs, the OnError-Handler will be called (see the [Quick-Start](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_a) example)
 
-
-
-[build-badge]: https://github.com/mkosir/react-parallax-tilt/actions/workflows/build.yml/badge.svg
-[build-url]: https://github.com/mkosir/react-parallax-tilt/actions/workflows/build.yml
-[test-badge]: https://github.com/mkosir/react-parallax-tilt/actions/workflows/test.yml/badge.svg
-[test-url]: https://github.com/mkosir/react-parallax-tilt/actions/workflows/test.yml
+```csharp
+public void Transact(EosSharp.Core.Api.v1.Action action)
+{
+	_waxCloudWalletPlugin.Sign(new[] { action });
+}
+```
