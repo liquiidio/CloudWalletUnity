@@ -301,7 +301,6 @@ namespace WaxCloudWalletUnity.Examples.Ui
                     data = new Dictionary<string, object>
                     {
                         { "voter", "............1" },
-                        { "proxy", "coredevproxy" },
                         { "producers", producers.ToArray() }
                     }
                 };
