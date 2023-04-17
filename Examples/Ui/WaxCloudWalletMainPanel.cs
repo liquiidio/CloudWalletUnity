@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Assets.Packages.WcwUnity.Src;
+using Assets.Packages.CloudWalletUnity.Src;// Do not remove
 using EosSharp.Core.Api.v1;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Assets.Packages.WcwUnity.Src; // Do not remove
 using Action = EosSharp.Core.Api.v1.Action;
 
 namespace WaxCloudWalletUnity.Examples.Ui
@@ -56,7 +55,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
         [SerializeField] internal UiToolkitExample UiToolkitExample;
         [SerializeField] internal WaxCloudWalletLoginPanel WaxCloudWalletLoginPanel;
 
-        private WaxCloudWalletPlugin _waxCloudWalletPlugin;
+        private CloudWalletPlugin _cloudWalletPlugin;
 
         private void Start()
         {
@@ -302,7 +301,7 @@ namespace WaxCloudWalletUnity.Examples.Ui
                     data = new Dictionary<string, object>
                     {
                         { "voter", "............1" },
-                        { "proxy", "coredevproxy" },
+                        { "proxy", "" },
                         { "producers", producers.ToArray() }
                     }
                 };
@@ -320,16 +319,16 @@ namespace WaxCloudWalletUnity.Examples.Ui
 
             _logoutButton.clickable.clicked += () =>
             {
-                if (_waxCloudWalletPlugin != null && !string.IsNullOrEmpty(_waxCloudWalletPlugin.Account))
-                    _waxCloudWalletPlugin.Logout();
+                if (_cloudWalletPlugin != null && !string.IsNullOrEmpty(_cloudWalletPlugin.Account))
+                    _cloudWalletPlugin.Logout();
                 Hide();
                 WaxCloudWalletLoginPanel.Show();
             };
 
             _createInfoButton.clickable.clicked += () =>
             {
-                if (_waxCloudWalletPlugin != null && !string.IsNullOrEmpty(_waxCloudWalletPlugin.Account))
-                    _waxCloudWalletPlugin.CreateInfo();
+                if (_cloudWalletPlugin != null && !string.IsNullOrEmpty(_cloudWalletPlugin.Account))
+                    _cloudWalletPlugin.CreateInfo();
             };
         }
 
@@ -337,12 +336,12 @@ namespace WaxCloudWalletUnity.Examples.Ui
 
         #region Rebind
 
-        public void Rebind(string accountName, WaxCloudWalletPlugin cloudWalletPlugin)
+        public void Rebind(string accountName, CloudWalletPlugin cloudWalletPlugin)
         {
             _fromTextField.value = accountName;
             _accountLabel.text = accountName;
             _receiverAccountTextField.value = accountName;
-            _waxCloudWalletPlugin = cloudWalletPlugin;
+            _cloudWalletPlugin = cloudWalletPlugin;
         }
 
         #endregion

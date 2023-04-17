@@ -16,43 +16,43 @@ using Newtonsoft.Json;
 using UnityEngine;
 using Action = EosSharp.Core.Api.v1.Action;
 
-namespace Assets.Packages.WcwUnity.Src
+namespace Assets.Packages.CloudWalletUnity.Src
 {
 #if UNITY_ANDROID || UNITY_IOS
 using Universal.UniversalSDK;
 #endif
 
-    public class WcwErrorEvent
+    public class CloudWalletErrorEvent
     {
         [JsonProperty("message")]
         public string Message;
     }
 
-    public class WcwLoginEvent
+    public class CloudWalletLoginEvent
     {
         [JsonProperty("account")]
         public string Account;
     }
 
-    public class WcwSignEvent
+    public class CloudWalletSignEvent
     {
         [JsonProperty("sign_result")]
         public PushTransactionResponse Result;
     }
 
-    public class WcwLogoutEvent
+    public class CloudWalletLogoutEvent
     {
         [JsonProperty("logout_result")]
         public string LogoutResult;
     }
 
-    public class WcwInitEvent
+    public class CloudWalletInitEvent
     {
         [JsonProperty("init_result")]
         public string InitResult;
     }
 
-    public class WcwCreateInfoResult
+    public class CloudWalletCreateInfoResult
     {
         [JsonProperty("contract")]
         public string Contract;
@@ -64,14 +64,14 @@ using Universal.UniversalSDK;
         public string Memo;
     }
 
-    public class WcwCreateInfoEvent
+    public class CloudWalletCreateInfoEvent
     {
         [JsonProperty("create_info_result")]
-        public WcwCreateInfoResult Result;
+        public CloudWalletCreateInfoResult Result;
     }
     
 
-    public class WaxCloudWalletPlugin : MonoBehaviour
+    public class CloudWalletPlugin : MonoBehaviour
     {
         private bool _refocusWindow;
 
@@ -89,7 +89,7 @@ using Universal.UniversalSDK;
             permission = PlaceholderPermission
         };
 
-        private static WaxCloudWalletPlugin _instance;
+        private static CloudWalletPlugin _instance;
 
         public bool IsInitialized => _instance._isInitialized;
         public bool IsLoggedIn => _instance._isLoggedIn;
@@ -102,43 +102,43 @@ using Universal.UniversalSDK;
         #region WebGL
 #if UNITY_WEBGL
 
-    private Action<WcwLoginEvent> _onLoggedIn;
-    public Action<WcwLoginEvent> OnLoggedIn
+    private Action<CloudWalletLoginEvent> _onLoggedIn;
+    public Action<CloudWalletLoginEvent> OnLoggedIn
     {
         get => _instance._onLoggedIn;
         set => _instance._onLoggedIn = value;
     }
 
-    private Action<WcwSignEvent> _onTransactionSigned;
-    public Action<WcwSignEvent> OnTransactionSigned
+    private Action<CloudWalletSignEvent> _onTransactionSigned;
+    public Action<CloudWalletSignEvent> OnTransactionSigned
     {
         get => _instance._onTransactionSigned;
         set => _instance._onTransactionSigned = value;
     }
 
-    private Action<WcwLogoutEvent> _onLogout;
-    public Action<WcwLogoutEvent> OnLogout
+    private Action<CloudWalletLogoutEvent> _onLogout;
+    public Action<CloudWalletLogoutEvent> OnLogout
     {
         get => _instance._onLogout;
         set => _instance._onLogout = value;
     }
 
-    private Action<WcwErrorEvent> _onError;
-    public Action<WcwErrorEvent> OnError
+    private Action<CloudWalletErrorEvent> _onError;
+    public Action<CloudWalletErrorEvent> OnError
     {
         get => _instance._onError;
         set => _instance._onError = value;
     }
 
-    private Action<WcwCreateInfoEvent> _onInfoCreated;
-    public Action<WcwCreateInfoEvent> OnInfoCreated
+    private Action<CloudWalletCreateInfoEvent> _onInfoCreated;
+    public Action<CloudWalletCreateInfoEvent> OnInfoCreated
     {
         get => _instance._onInfoCreated;
         set => _instance._onInfoCreated = value;
     }
 
-    private Action<WcwInitEvent> _onInit;
-    public Action<WcwInitEvent> OnInit
+    private Action<CloudWalletInitEvent> _onInit;
+    public Action<CloudWalletInitEvent> OnInit
     {
         get => _instance._onInit;
         set => _instance._onInit = value;
@@ -161,7 +161,7 @@ using Universal.UniversalSDK;
     public delegate void OnUserAccountProofCallback(System.IntPtr onUserAccountProofPtr);
 
     [DllImport("__Internal")]
-    private static extern void WCWInit(
+    private static extern void CloudWalletInit(
         string rpcAddress,          // string - The WAX public node API endpoint URL you wish to connect to. Required
         bool tryAutoLogin,          // bool - Always attempt to autologin when your dapp starts up. Default true
         string userAccount,         // string - User account to start up with. Optional
@@ -184,43 +184,43 @@ using Universal.UniversalSDK;
                     );
 
     [DllImport("__Internal")]
-    private static extern void WCWLogin();
+    private static extern void CloudWalletLogin();
 
     [DllImport("__Internal")]
-    private static extern void WCWSign(string actionDataJsonString);
+    private static extern void CloudWalletSign(string actionDataJsonString);
 
     [DllImport("__Internal")]
-    private static extern void WCWCreateInfo();
+    private static extern void CloudWalletCreateInfo();
 
     [DllImport("__Internal")]
-    private static extern void WCWLogout();
+    private static extern void CloudWalletLogout();
 
     [DllImport("__Internal")]
-    private static extern void WCWWaxProof(string nonce, bool verify = true);
+    private static extern void CloudWalletWaxProof(string nonce, bool verify = true);
 
     [DllImport("__Internal")]
-    private static extern void WCWUserAccountProof(string nonce, string description, bool verify = true);
+    private static extern void CloudWalletUserAccountProof(string nonce, string description, bool verify = true);
 
     [DllImport("__Internal")]
-    private static extern void WCWSetOnLogin(OnLoginCallback onLoginCallback);
+    private static extern void CloudWalletSetOnLogin(OnLoginCallback onLoginCallback);
 
     [DllImport("__Internal")]
-    private static extern void WCWSetOnSign(OnSignCallback onSignCallback);
+    private static extern void CloudWalletSetOnSign(OnSignCallback onSignCallback);
 
     [DllImport("__Internal")]
-    private static extern void WCWSetOnError(OnErrorCallback onErrorCallback);
+    private static extern void CloudWalletSetOnError(OnErrorCallback onErrorCallback);
 
     [DllImport("__Internal")]
-    private static extern void WCWSetOnCreateInfo(OnCreateInfoCallback onCreateInfoCallback);
+    private static extern void CloudWalletSetOnCreateInfo(OnCreateInfoCallback onCreateInfoCallback);
 
     [DllImport("__Internal")]
-    private static extern void WCWSetOnLogout(OnLogoutCallback onLogoutCallback);
+    private static extern void CloudWalletSetOnLogout(OnLogoutCallback onLogoutCallback);
 
     [DllImport("__Internal")]
-    private static extern void WCWSetOnWaxProof(OnWaxProofCallback onWaxProofCallback);
+    private static extern void CloudWalletSetOnWaxProof(OnWaxProofCallback onWaxProofCallback);
 
     [DllImport("__Internal")]
-    private static extern void WCWSetOnUserAccountProof(OnUserAccountProofCallback onUserAccountProofCallback);
+    private static extern void CloudWalletSetOnUserAccountProof(OnUserAccountProofCallback onUserAccountProofCallback);
 
     private void Awake()
     {
@@ -260,41 +260,48 @@ using Universal.UniversalSDK;
         {
             action.authorization = new List<PermissionLevel>()
             {
-                new PermissionLevel()
+                new()
                 {
                     actor = _account,
-                    permission = "active"
+                    permission = "active" // permission is always active in Cloud Wallet
                 }
             };
+
+            var placeholderDict1 = ToDictionary<object>(action.data);
+            var placeholderDict2 = placeholderDict1.ToDictionary(keyValuePair => keyValuePair.Key,
+                keyValuePair => keyValuePair.Value is string and PlaceholderName ? _account : keyValuePair.Value);
+
+            var dataObj = JsonConvert.DeserializeObject<object>(JsonConvert.SerializeObject(placeholderDict2));
+            action.data = dataObj;
         }
 
         // TODO, [JsonIgnore] hex_data in EosSharp.Core.Action
-        WCWSign(JsonConvert.SerializeObject(actions));
+        CloudWalletSign(JsonConvert.SerializeObject(actions));
     }
 
     public void Login()
     {
-        WCWLogin();
+        CloudWalletLogin();
     }
 
     public void Logout()
     {
-        WCWLogout();
+        CloudWalletLogout();
     }
 
     public void CreateInfo()
     {
-        WCWCreateInfo();
+        CloudWalletCreateInfo();
     }
 
     public void WaxProof(string nonce, bool verify = true)
     {
-        WCWWaxProof(nonce, verify);
+        CloudWalletWaxProof(nonce, verify);
     }
 
     public void UserAccountProof(string nonce, string description, bool verify = true)
     {
-        WCWUserAccountProof(nonce, description, verify);
+        CloudWalletUserAccountProof(nonce, description, verify);
     }
     
     [MonoPInvokeCallback(typeof(OnLoginCallback))]
@@ -389,7 +396,7 @@ using Universal.UniversalSDK;
 
         foreach (var msg in messageListCopy)
         {
-            var loginEvent = JsonConvert.DeserializeObject<WcwLoginEvent>(msg);
+            var loginEvent = JsonConvert.DeserializeObject<CloudWalletLoginEvent>(msg);
             if (!string.IsNullOrEmpty(loginEvent?.Account))
             {
                 _instance._account = loginEvent?.Account;
@@ -399,26 +406,26 @@ using Universal.UniversalSDK;
                 continue;
             }
 
-            var errorEvent = JsonConvert.DeserializeObject<WcwErrorEvent>(msg);
+            var errorEvent = JsonConvert.DeserializeObject<CloudWalletErrorEvent>(msg);
             if (!string.IsNullOrEmpty(errorEvent?.Message))
             {
                 _instance.OnError?.Invoke(errorEvent);
                 continue;
             }
 
-            var signEvent = JsonConvert.DeserializeObject<WcwSignEvent>(msg);
+            var signEvent = JsonConvert.DeserializeObject<CloudWalletSignEvent>(msg);
             if (signEvent?.Result != null)
             {
                 _instance.OnTransactionSigned.Invoke(signEvent);
             }
 
-            var createInfoEvent = JsonConvert.DeserializeObject<WcwCreateInfoEvent>(msg);
+            var createInfoEvent = JsonConvert.DeserializeObject<CloudWalletCreateInfoEvent>(msg);
             if (createInfoEvent?.Result != null)
             {
                 _instance.OnInfoCreated.Invoke(createInfoEvent);
             }
 
-            var logoutEvent = JsonConvert.DeserializeObject<WcwLogoutEvent>(msg);
+            var logoutEvent = JsonConvert.DeserializeObject<CloudWalletLogoutEvent>(msg);
             if (!string.IsNullOrEmpty(logoutEvent?.LogoutResult))
             {
                 _instance.OnLogout.Invoke(logoutEvent);
@@ -531,32 +538,32 @@ using Universal.UniversalSDK;
             bool returnTempAccounts = false
         ) {
 #if UNITY_WEBGL
-        WCWSetOnLogin(DelegateOnLoginEvent);
-        WCWSetOnSign(DelegateOnSignEvent);
-        WCWSetOnError(DelegateOnErrorEvent);
-        WCWSetOnCreateInfo(DelegateOnCreateInfoEvent);
-        WCWSetOnLogout(DelegateOnLogoutEvent);
-        WCWSetOnWaxProof(DelegateOnWaxProofEvent);
-        WCWSetOnUserAccountProof(DelegateOnUserAccountProofEvent);
-        WCWInit(rpcAddress, tryAutoLogin, userAccount, pubKeys, apiSigner, eosApiArgs, freeBandwidth, feeFallback, verifyTx, metricsUrl, returnTempAccounts);
+        CloudWalletSetOnLogin(DelegateOnLoginEvent);
+        CloudWalletSetOnSign(DelegateOnSignEvent);
+        CloudWalletSetOnError(DelegateOnErrorEvent);
+        CloudWalletSetOnCreateInfo(DelegateOnCreateInfoEvent);
+        CloudWalletSetOnLogout(DelegateOnLogoutEvent);
+        CloudWalletSetOnWaxProof(DelegateOnWaxProofEvent);
+        CloudWalletSetOnUserAccountProof(DelegateOnUserAccountProofEvent);
+        CloudWalletInit(rpcAddress, tryAutoLogin, userAccount, pubKeys, apiSigner, eosApiArgs, freeBandwidth, feeFallback, verifyTx, metricsUrl, returnTempAccounts);
         _instance._isInitialized = true;
 #endif
         }
 
-        public void InitializeDesktop(uint localPort, string wcwSigningWebsiteUrl, bool hostLocalWebsite = true, string indexHtmlDataPath = null, string waxJsDataPath = null)
+        public void InitializeDesktop(uint localPort, string CloudWalletSigningWebsiteUrl, bool hostLocalWebsite = true, string indexHtmlDataPath = null, string waxJsDataPath = null)
         {
 #if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX
             try
             {
-                if (wcwSigningWebsiteUrl.StartsWith("https"))
-                    throw new NotSupportedException("wcwSigningWebsiteUrl can't be SSL encrypted");
+                if (CloudWalletSigningWebsiteUrl.StartsWith("https"))
+                    throw new NotSupportedException("CloudWalletSigningWebsiteUrl can't be SSL encrypted");
 
                 if (hostLocalWebsite)
                 {
-                    var data = indexHtmlDataPath == null ? File.ReadAllText(Application.dataPath + "/Packages/WcwUnity/Assets/index.html") : File.ReadAllText(indexHtmlDataPath);
+                    var data = indexHtmlDataPath == null ? File.ReadAllText(Application.dataPath + "/Packages/cloudwallet/Assets/index.html") : File.ReadAllText(indexHtmlDataPath);
                     _indexHtmlBinary = Encoding.UTF8.GetBytes(data);
 
-                    data = waxJsDataPath == null ? File.ReadAllText(Application.dataPath + "/Packages/WcwUnity/Assets/waxjs.js") : File.ReadAllText(waxJsDataPath);
+                    data = waxJsDataPath == null ? File.ReadAllText(Application.dataPath + "/Packages/cloudwallet/Assets/waxjs.js") : File.ReadAllText(waxJsDataPath);
                     _waxjsBinary = Encoding.UTF8.GetBytes(data);
                 }
             }
@@ -565,17 +572,17 @@ using Universal.UniversalSDK;
                 Debug.LogError(e);
             }
             _localUrl = $"http://127.0.0.1:{localPort}/";
-            _remoteUrl = hostLocalWebsite == false ? wcwSigningWebsiteUrl : $"http://127.0.0.1:{localPort}/index.html";
+            _remoteUrl = hostLocalWebsite == false ? CloudWalletSigningWebsiteUrl : $"http://127.0.0.1:{localPort}/index.html";
 #endif
         }
 
-        public void InitializeMobile(uint localPort, string wcwSigningWebsiteUrl, bool hostLocalWebsite, string indexHtmlString = null, string waxJsString = null)
+        public void InitializeMobile(uint localPort, string CloudWalletSigningWebsiteUrl, bool hostLocalWebsite, string indexHtmlString = null, string waxJsString = null)
         {
 #if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN
             try
             {
-                if (wcwSigningWebsiteUrl.StartsWith("https"))
-                    throw new NotSupportedException("wcwSigningWebsiteUrl can't be SSL encrypted");
+                if (CloudWalletSigningWebsiteUrl.StartsWith("https"))
+                    throw new NotSupportedException("CloudWalletSigningWebsiteUrl can't be SSL encrypted");
 
                 if (hostLocalWebsite)
                 {
@@ -593,7 +600,7 @@ using Universal.UniversalSDK;
                 Debug.LogError(e);
             }
             _localUrl = $"http://127.0.0.1:{localPort}/";
-            _remoteUrl = wcwSigningWebsiteUrl;
+            _remoteUrl = CloudWalletSigningWebsiteUrl;
 #endif
 #if (UNITY_ANDROID || UNITY_IOS)
         _universalSdk = new GameObject(nameof(UniversalSDK)).AddComponent<UniversalSDK>();
@@ -633,7 +640,7 @@ using Universal.UniversalSDK;
         #region Desktop and Mobile
 #if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX
 
-        public class WcwPreflightResponse
+        public class CloudWalletPreflightResponse
         {
             [JsonProperty("ok")]
             public bool Ok;
@@ -643,12 +650,12 @@ using Universal.UniversalSDK;
 
         private string _localUrl;
 
-        public Action<WcwLoginEvent> OnLoggedIn;
-        public Action<WcwSignEvent> OnTransactionSigned;
-        public Action<WcwErrorEvent> OnError;
-        public Action<WcwCreateInfoEvent> OnInfoCreated;
-        public Action<WcwLogoutEvent> OnLogout;
-        public Action<WcwInitEvent> OnInit;
+        public Action<CloudWalletLoginEvent> OnLoggedIn;
+        public Action<CloudWalletSignEvent> OnTransactionSigned;
+        public Action<CloudWalletErrorEvent> OnError;
+        public Action<CloudWalletCreateInfoEvent> OnInfoCreated;
+        public Action<CloudWalletLogoutEvent> OnLogout;
+        public Action<CloudWalletInitEvent> OnInit;
 
         private CancellationTokenSource _tokenSource;
         private CancellationToken _token;
@@ -673,8 +680,6 @@ using Universal.UniversalSDK;
                         permission = "active" // permission is always active in Cloud Wallet
                     }
                 };
-                if (action.account == PlaceholderName)
-                    action.account = _account;
 
                 var placeholderDict1 = ToDictionary<object>(action.data);
                 var placeholderDict2 = placeholderDict1.ToDictionary(keyValuePair => keyValuePair.Key,
@@ -685,13 +690,6 @@ using Universal.UniversalSDK;
             }
 
             StartBrowserCommunication(BuildUrl("sign", JsonConvert.SerializeObject(actions)));
-        }
-
-        private static Dictionary<string, TValue> ToDictionary<TValue>(object obj)
-        {
-            var json = JsonConvert.SerializeObject(obj);
-            var dictionary = JsonConvert.DeserializeObject<Dictionary<string, TValue>>(json);
-            return dictionary;
         }
 
         public void Login()
@@ -857,7 +855,7 @@ using Universal.UniversalSDK;
 
                         var responseBody =
                             Encoding.UTF8.GetBytes(
-                                JsonConvert.SerializeObject(new WcwPreflightResponse() { Ok = true }));
+                                JsonConvert.SerializeObject(new CloudWalletPreflightResponse() { Ok = true }));
 
                         response.ContentLength64 = responseBody.Length;
                         await response.OutputStream.WriteAsync(responseBody, 0, responseBody.Length, _token).ConfigureAwait(false);
@@ -900,7 +898,7 @@ using Universal.UniversalSDK;
 
             foreach (var msg in messageListCopy)
             {
-                var loginEvent = JsonConvert.DeserializeObject<WcwLoginEvent>(msg);
+                var loginEvent = JsonConvert.DeserializeObject<CloudWalletLoginEvent>(msg);
                 if (!string.IsNullOrEmpty(loginEvent?.Account))
                 {
                     _account = loginEvent?.Account;
@@ -911,14 +909,14 @@ using Universal.UniversalSDK;
                     continue;
                 }
 
-                var errorEvent = JsonConvert.DeserializeObject<WcwErrorEvent>(msg);
+                var errorEvent = JsonConvert.DeserializeObject<CloudWalletErrorEvent>(msg);
                 if (!string.IsNullOrEmpty(errorEvent?.Message))
                 {
                     OnError?.Invoke(errorEvent);
                     continue;
                 }
 
-                var createInfoEvent = JsonConvert.DeserializeObject<WcwCreateInfoEvent>(msg);
+                var createInfoEvent = JsonConvert.DeserializeObject<CloudWalletCreateInfoEvent>(msg);
                 if (createInfoEvent != null && createInfoEvent.Result != null &&
                     !string.IsNullOrEmpty(createInfoEvent.Result.Amount) &&
                     !string.IsNullOrEmpty(createInfoEvent.Result.Contract) &&
@@ -929,7 +927,7 @@ using Universal.UniversalSDK;
                     continue;
                 }
                 
-                var logoutEvent = JsonConvert.DeserializeObject<WcwLogoutEvent>(msg);
+                var logoutEvent = JsonConvert.DeserializeObject<CloudWalletLogoutEvent>(msg);
                 if (logoutEvent != null && !string.IsNullOrEmpty(logoutEvent.LogoutResult))
                 {
                     _isLoggedIn = false;
@@ -939,14 +937,14 @@ using Universal.UniversalSDK;
                     continue;
                 }
 
-                var initEvent = JsonConvert.DeserializeObject<WcwInitEvent>(msg);
+                var initEvent = JsonConvert.DeserializeObject<CloudWalletInitEvent>(msg);
                 if (initEvent != null && !string.IsNullOrEmpty(initEvent.InitResult))
                 {
                     OnInit?.Invoke(initEvent);
                     continue;
                 }
 
-                var signEvent = JsonConvert.DeserializeObject<WcwSignEvent>(msg);
+                var signEvent = JsonConvert.DeserializeObject<CloudWalletSignEvent>(msg);
                 if (signEvent?.Result == null) 
                     throw new NotSupportedException($"Can't parse Json-Body {msg}");
                 
@@ -955,6 +953,13 @@ using Universal.UniversalSDK;
         }
 
 #endif
+        private static Dictionary<string, TValue> ToDictionary<TValue>(object obj)
+        {
+            var json = JsonConvert.SerializeObject(obj);
+            var dictionary = JsonConvert.DeserializeObject<Dictionary<string, TValue>>(json);
+            return dictionary;
+        }
+
         #endregion
     }
 }
