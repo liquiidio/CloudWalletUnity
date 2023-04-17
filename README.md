@@ -8,12 +8,6 @@
 # Cloud Wallet Plugin
 ---
 
-<div align="center">
-
-[![Deploy](https://github.com/liquiidio/WcwUnity/actions/workflows/deploy.yml/badge.svg)](https://github.com/liquiidio/WcwUnity/actions/workflows/deploy.yml)
-
-</div>
-
 A native integration of the Wax Cloud Wallet compatible with all major Build Targets (WebGL, Windows, Mac, Linux, Android, iOS) without relying on WebViews.
 
 # Installation
