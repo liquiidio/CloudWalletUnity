@@ -32,8 +32,8 @@ jobs:
           git mv Src.meta $PKG_ROOT
           git mv README.md $PKG_ROOT || true
           git mv README.md.meta $PKG_ROOT || true
-          git mv WcwUnityWebgl.asmdef $PKG_ROOT
-          git mv WcwUnityWebgl.asmdef.meta $PKG_ROOT
+          git mv CloudWalletUnityWebgl.asmdef $PKG_ROOT
+          git mv CloudWalletUnityWebgl.asmdef.meta $PKG_ROOT
           find $PKG_ROOT/ -name \*.meta >> metaList
         env:
           PKG_ROOT: Assets/CloudWalletUnity
