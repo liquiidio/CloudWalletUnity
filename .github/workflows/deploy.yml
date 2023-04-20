@@ -32,17 +32,17 @@ jobs:
           git mv Src.meta $PKG_ROOT
           git mv README.md $PKG_ROOT || true
           git mv README.md.meta $PKG_ROOT || true
-          git mv WcwUnityWebgl.asmdef $PKG_ROOT
-          git mv WcwUnityWebgl.asmdef.meta $PKG_ROOT
+          git mv CloudWalletUnityWebgl.asmdef $PKG_ROOT
+          git mv CloudWalletUnityWebgl.asmdef.meta $PKG_ROOT
           find $PKG_ROOT/ -name \*.meta >> metaList
         env:
-          PKG_ROOT: Assets/WCWUnity
+          PKG_ROOT: Assets/CloudWalletUnity
       - name: Make directory for our unity package
         run: mkdir a
       - name: Create Unity Package
         uses: pCYSl5EDgo/create-unitypackage@master
         with:
-          package-path: 'a/wcwunity.unitypackage'
+          package-path: 'a/cloudwalletunity.unitypackage'
           include-files: metaList
       - name: Upload package
         uses: actions/upload-artifact@v1
@@ -100,5 +100,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_name: a/wcwunity.unitypackage # path + filename
+          asset_name: a/cloudwalletunity.unitypackage # path + filename
 
