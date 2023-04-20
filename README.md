@@ -31,11 +31,11 @@ In your Unity project:
 
     ![image](https://user-images.githubusercontent.com/74650011/208429298-76fe1101-95f3-4ab0-bbd5-f0a32a1cc652.png)
 
- 3. Enter URL: `https://github.com/liquiidio/WcwUnityWebGl.git#upm`
+ 3. Enter URL: `https://github.com/liquiidio/CloudWalletUnity.git#upm`
    
 ---
 ### 2. Importing the Unity Package.
-Download the [UnityPackage here](https://github.com/liquiidio/WcwUnityWebGl/releases/latest/download/wcwunity.unitypackage).
+Download the [UnityPackage here](https://github.com/liquiidio/CloudWalletUnity/releases/latest/download/wcwunity.unitypackage).
 
 Then in your Unity project:
 
@@ -53,12 +53,9 @@ Then in your Unity project:
 
 ---
 ### 3. Install manually. 
-Download this [project here](https://github.com/liquiidio/WcwUnityWebGl/releases/latest).
+Download this [project here](https://github.com/liquiidio/CloudWalletUnity/releases).
 
-  * [zip](https://github.com/liquiidio/WcwUnityWebGl/archive/refs/tags/1.0.10.zip)
-  * [tar.gz](https://github.com/liquiidio/WcwUnityWebGl/archive/refs/tags/1.0.10.tar.gz)
-
-Then in your Unity project, copy the sources from `WCWUnity` into your Unity `Assets` directory.
+Then in your Unity project, copy the sources from `CloudWalletUnity` into your Unity `Assets` directory.
 
 ---
 
@@ -74,52 +71,52 @@ Then in your Unity project, copy the sources from `WCWUnity` into your Unity `As
 5. Initialize the CloudWalletPlugin. This will start the communication with the Browser and create the binding between your local script and the wax-js running in the Browser.
 
 ```csharp
-private WaxCloudWalletPlugin _waxCloudWalletPlugin;
+private CloudWalletPlugin _cloudWalletPlugin;
 public string Account { get; private set; }
 
 public void Start()
 {
 	// Instantiate the WaxCloudWalletPlugin
-	_waxCloudWalletPlugin = new GameObject(nameof(WaxCloudWalletPlugin)).AddComponent<WaxCloudWalletPlugin>();
+	_cloudWalletPlugin = new GameObject(nameof(CloudWalletPlugin)).AddComponent<CloudWalletPlugin>();
 
 	// Assign Event-Handlers/Callbacks
-	_waxCloudWalletPlugin.OnLoggedIn += (loginEvent) =>
+	_cloudWalletPlugin.OnLoggedIn += (loginEvent) =>
 	{
 		Account = loginEvent.Account;
 		Debug.Log($"{loginEvent.Account} Logged In");
 	};
 
-	_waxCloudWalletPlugin.OnError += (errorEvent) =>
+	_cloudWalletPlugin.OnError += (errorEvent) =>
 	{
 		Debug.Log($"Error: {errorEvent.Message}");
 	};
 
-	_waxCloudWalletPlugin.OnTransactionSigned += (signEvent) =>
+	_cloudWalletPlugin.OnTransactionSigned += (signEvent) =>
 	{
 		Debug.Log($"Transaction signed: {JsonConvert.SerializeObject(signEvent.Result)}");
 	};
 	
 	// Inititalize the WebGl binding while passign the RPC-Endpoint of your Choice
-	_waxCloudWalletPlugin.InitializeWebGl("https://wax.greymass.com");
+	_cloudWalletPlugin.InitializeWebGl("https://wax.greymass.com");
 }
 ```
 
 ### Login
 
 
-1. Logging in to the Wax Cloud Wallet Plugin is as simple as calling the Login-Method on [the previously](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_a) initialized WaxCloudWalletPlugin-instance.
+1. Logging in to the Wax Cloud Wallet Plugin is as simple as calling the Login-Method on [the previously](https://liquiidio.gitbook.io/unity-plugin-suite/v/cloudwalletwunity/examples/example_a) initialized WaxCloudWalletPlugin-instance.
 2. Once the Login-Method is called, the user will be prompted with the standard Wax Cloud Wallet Login prompt and will be requested to follow the typical Login/Authentication-Scheme.
 
 ```csharp
 public void Login()
 {
-	_waxCloudWalletPlugin.Login();
+	_cloudWalletPlugin.Login();
 }
 ```
 
 ### Token Transfer
 
-1. The following example shows how a Token Transfer Action can be created and passed to the Sign-Method of [the previously](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_a) initialized WaxCloudWalletPlugin-Object.
+1. The following example shows how a Token Transfer Action can be created and passed to the Sign-Method of [the previously](https://liquiidio.gitbook.io/unity-plugin-suite/v/cloudwalletunity/examples/example_a) initialized WaxCloudWalletPlugin-Object.
 
 ```csharp
    // transfer tokens using a session
@@ -140,21 +137,21 @@ public void Login()
           };
 		
 	  // Sign 
-	 _waxCloudWalletPlugin.Sign(new[] { action });
+	 _cloudWalletPlugin.Sign(new[] { action });
 	}
 ```
 ### Transact
 
-1. Transacting/Signing Transactions with the Wax Cloud Wallet Plugin is as simple as calling the Sign-Method on [the previously](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_a) initialized WaxCloudWalletPlugin-instance while passing a EosSharp Action Object.
-2. To be able to perform a transaction, a user needs to [login](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_b) first. Once a user has been logged in, the Plugin will automatically use the the logged in user to sign transactions.
+1. Transacting/Signing Transactions with the Wax Cloud Wallet Plugin is as simple as calling the Sign-Method on [the previously](https://liquiidio.gitbook.io/unity-plugin-suite/v/cloudwalletunity/examples/example_a) initialized WaxCloudWalletPlugin-instance while passing a EosSharp Action Object.
+2. To be able to perform a transaction, a user needs to [login](https://liquiidio.gitbook.io/unity-plugin-suite/v/cloudwalletunity/examples/example_b) first. Once a user has been logged in, the Plugin will automatically use the the logged in user to sign transactions.
 3. Once the Sign-Method is called (while a user has previously logged in and a valid Action Object has been passed) the user will automatically be prompted with the typical Wax Cloud Authentication and Signing-Scheme.
 4. If "Auto-Signing" is enabled, transactions will be signed automatically.
-5. Immediately a Transaction-Signing is successful, the OnTransactionSigned-Handler will be called (see the [Quick-Start](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_a) example)
-6. If an error occurs, the OnError-Handler will be called (see the [Quick-Start](https://liquiidio.gitbook.io/unity-plugin-suite/v/wcwunity/examples/example_a) example)
+5. Immediately a Transaction-Signing is successful, the OnTransactionSigned-Handler will be called (see the [Quick-Start](https://liquiidio.gitbook.io/unity-plugin-suite/v/cloudwalletunity/examples/example_a) example)
+6. If an error occurs, the OnError-Handler will be called (see the [Quick-Start](https://liquiidio.gitbook.io/unity-plugin-suite/v/cloudwalletunity/examples/example_a) example)
 
 ```csharp
 public void Transact(EosSharp.Core.Api.v1.Action action)
 {
-	_waxCloudWalletPlugin.Sign(new[] { action });
+	_cloudWalletPlugin.Sign(new[] { action });
 }
 ```
