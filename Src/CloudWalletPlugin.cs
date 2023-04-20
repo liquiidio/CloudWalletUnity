@@ -619,7 +619,7 @@ using Universal.UniversalSDK;
 #endif
         #endregion
 
-#if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN) && !UNITY_WEBGL
+#if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)  && (!UNITY_WEBGL && !UNITY_IOS && !UNITY_ANDROID)
         private void StartBrowserCommunication(string url)
         {
             _unityWindow = GetActiveWindow();
