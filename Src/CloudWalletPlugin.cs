@@ -14,6 +14,7 @@ using AOT;
 using EosSharp.Core.Api.v1;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Scripting;
 using Action = EosSharp.Core.Api.v1.Action;
 
 namespace Assets.Packages.CloudWalletUnity.Src
@@ -22,36 +23,67 @@ namespace Assets.Packages.CloudWalletUnity.Src
 using Universal.UniversalSDK;
 #endif
 
+    [Preserve]
     public class CloudWalletErrorEvent
     {
         [JsonProperty("message")]
         public string Message;
+
+        public CloudWalletErrorEvent()
+        {
+
+        }
     }
 
+    [Preserve]
     public class CloudWalletLoginEvent
     {
         [JsonProperty("account")]
         public string Account;
+
+        public CloudWalletLoginEvent()
+        {
+
+        }
     }
 
+    [Preserve]
     public class CloudWalletSignEvent
     {
         [JsonProperty("sign_result")]
         public PushTransactionResponse Result;
+
+        public CloudWalletSignEvent()
+        {
+
+        }
     }
 
+    [Preserve]
     public class CloudWalletLogoutEvent
     {
         [JsonProperty("logout_result")]
         public string LogoutResult;
+
+        public CloudWalletLogoutEvent()
+        {
+
+        }
     }
 
+    [Preserve]
     public class CloudWalletInitEvent
     {
         [JsonProperty("init_result")]
         public string InitResult;
+
+        public CloudWalletInitEvent()
+        {
+
+        }
     }
 
+    [Preserve]
     public class CloudWalletCreateInfoResult
     {
         [JsonProperty("contract")]
@@ -62,12 +94,23 @@ using Universal.UniversalSDK;
         public string Amount;
         [JsonProperty("memo")]
         public string Memo;
+
+        public CloudWalletCreateInfoResult()
+        {
+
+        }
     }
 
+    [Preserve]
     public class CloudWalletCreateInfoEvent
     {
         [JsonProperty("create_info_result")]
         public CloudWalletCreateInfoResult Result;
+
+        public CloudWalletCreateInfoEvent()
+        {
+
+        }
     }
     
 
