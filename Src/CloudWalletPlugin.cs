@@ -112,7 +112,7 @@ using Universal.UniversalSDK;
 
         }
     }
-    
+
 
     public class CloudWalletPlugin : MonoBehaviour
     {
@@ -579,7 +579,8 @@ using Universal.UniversalSDK;
             string verifyTx = null,
             string metricsUrl = null,
             bool returnTempAccounts = false
-        ) {
+        )
+        {
 #if UNITY_WEBGL
         CloudWalletSetOnLogin(DelegateOnLoginEvent);
         CloudWalletSetOnSign(DelegateOnSignEvent);
@@ -603,10 +604,12 @@ using Universal.UniversalSDK;
 
                 if (hostLocalWebsite)
                 {
-                    var data = indexHtmlDataPath == null ? File.ReadAllText(Application.dataPath + "/Packages/cloudwallet/Assets/index.html") : File.ReadAllText(indexHtmlDataPath);
+                    var data = Resources.Load<TextAsset>("CloudWallet/index").text;
+                    //var data = Resources.Load("/CloudWallet/index");
                     _indexHtmlBinary = Encoding.UTF8.GetBytes(data);
 
-                    data = waxJsDataPath == null ? File.ReadAllText(Application.dataPath + "/Packages/cloudwallet/Assets/waxjs.js") : File.ReadAllText(waxJsDataPath);
+                    data = Resources.Load<TextAsset>("CloudWallet/waxjs").text;
+                    //data = Resources.Load("/CloudWallet/waxjs");
                     _waxjsBinary = Encoding.UTF8.GetBytes(data);
                 }
             }
@@ -752,9 +755,9 @@ using Universal.UniversalSDK;
 
         private string BuildUrl(string hashpath, string json = null)
         {
-            if (_remoteUrl.EndsWith("/")) 
+            if (_remoteUrl.EndsWith("/"))
                 _remoteUrl = _remoteUrl[..^1];
-        
+
             json ??= "";
             return $"{_remoteUrl}#{hashpath}{json}";
         }
@@ -779,9 +782,9 @@ using Universal.UniversalSDK;
         {
             try
             {
-                if (_listener == null) 
+                if (_listener == null)
                     return;
-                
+
                 _listener.Stop();
                 _listener.Close();
                 _listener.Abort();
@@ -827,6 +830,7 @@ using Universal.UniversalSDK;
                         catch
                         {
                             Debug.Log("requestAwaiterTask is already disposed, you can ignore this Log");
+                            _tokenSource?.Cancel();
                         }
 
                         if (context == null)
@@ -889,10 +893,10 @@ using Universal.UniversalSDK;
                     case "GET":
                         if (!request.Url.ToString().EndsWith("preflight"))
                             throw new NotSupportedException($"path {request.Url} is not supported");
-                        
+
                         if (request.ContentType != "application/json")
                             throw new NotSupportedException($"ContentType {request.ContentType} is not supported");
-                            
+
                         response.StatusCode = (int)HttpStatusCode.OK;
                         response.ContentType = "application/json";
 
@@ -969,7 +973,7 @@ using Universal.UniversalSDK;
                     OnInfoCreated?.Invoke(createInfoEvent);
                     continue;
                 }
-                
+
                 var logoutEvent = JsonConvert.DeserializeObject<CloudWalletLogoutEvent>(msg);
                 if (logoutEvent != null && !string.IsNullOrEmpty(logoutEvent.LogoutResult))
                 {
@@ -988,9 +992,9 @@ using Universal.UniversalSDK;
                 }
 
                 var signEvent = JsonConvert.DeserializeObject<CloudWalletSignEvent>(msg);
-                if (signEvent?.Result == null) 
+                if (signEvent?.Result == null)
                     throw new NotSupportedException($"Can't parse Json-Body {msg}");
-                
+
                 OnTransactionSigned.Invoke(signEvent);
             }
         }
