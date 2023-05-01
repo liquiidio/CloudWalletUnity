@@ -552,6 +552,11 @@ using Universal.UniversalSDK;
 
             _refocusWindow = false;
         }
+#elif UNITY_STANDALONE_OSX || UNITY_STANDALONE_LINUX
+        private void Update()
+        {
+            DispatchEventQueue();
+        }
 #endif
         #endregion
 
