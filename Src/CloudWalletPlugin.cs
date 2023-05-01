@@ -609,11 +609,11 @@ using Universal.UniversalSDK;
 
                 if (hostLocalWebsite)
                 {
-                    var data = Resources.Load<TextAsset>("CloudWallet/index").text;
+                    var data = indexHtmlDataPath ?? Resources.Load<TextAsset>("CloudWallet/index").text;
                     //var data = Resources.Load("/CloudWallet/index");
                     _indexHtmlBinary = Encoding.UTF8.GetBytes(data);
 
-                    data = Resources.Load<TextAsset>("CloudWallet/waxjs").text;
+                    data = waxJsDataPath ?? Resources.Load<TextAsset>("CloudWallet/waxjs").text;
                     //data = Resources.Load("/CloudWallet/waxjs");
                     _waxjsBinary = Encoding.UTF8.GetBytes(data);
                 }
