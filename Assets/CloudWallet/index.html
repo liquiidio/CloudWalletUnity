@@ -41,8 +41,9 @@
 					}
 				} catch(e) {
 					await localCallback(JSON.stringify({ message: e.message }), "onerror");
-				}		
-				//window.close();
+				}
+				if(!debug)
+					window.close();
 			}
 			else if(hash.startsWith("#logout")){
 				if(debug)
@@ -58,8 +59,9 @@
 					}
 				} catch(e) {
 					await localCallback(JSON.stringify({ message: e.message }), "onerror");
-				}		
-				//window.close();
+				}
+				if(!debug)
+					window.close();
 			}
 			else if(hash.startsWith("#create_info")){
 				if(debug)
@@ -80,8 +82,9 @@
 					}
 				} catch(e) {
 					await localCallback(JSON.stringify({ message: e.message }), "onerror");
-				}		
-				//window.close();
+				}
+				if(!debug)
+					window.close();
 			}
 			else if(hash.startsWith("#sign")){
 				if(debug)
@@ -95,9 +98,13 @@
 				try {
 					var preflightResult = await localPreflight();
 					if(preflightResult.ok){
-						const actionDataJson = JSON.parse(hash.substring(5).replaceAll('%22','"').replaceAll('%20',' '));
+						const actionDataString = hash.substring(5).replaceAll('%22','"').replaceAll('%20',' ').replaceAll('%7B','{').replaceAll('%7D','}');
 						if(debug)
-							window.alert(actionDataJson);
+						{
+							window.alert(actionDataString);
+							console.log(actionDataString);
+						}
+						const actionDataJson = JSON.parse(actionDataString);
 						const result = await wax.api.transact({
 							actions: actionDataJson
 						}, 
@@ -114,7 +121,8 @@
 				} catch(e) {
 					await localCallback(JSON.stringify({message: e.message}), "onerror");
 				}
-				//window.close();
+				if(!debug)
+					window.close();
 			}
 		}
 	}, false);
