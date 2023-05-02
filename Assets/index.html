@@ -98,7 +98,7 @@
 				try {
 					var preflightResult = await localPreflight();
 					if(preflightResult.ok){
-						const actionDataString = hash.substring(5).replaceAll('%22','"').replaceAll('%20',' ').replaceAll('%7B','{').replaceAll('%7D','}');
+						const actionDataString = hash.substring(5).replaceAll('%22','"').replaceAll('%20',' ').replaceAll('%7B','{').replaceAll('%7D','}').replaceAll('%5B','{').replaceAll('%5D','}');
 						if(debug)
 						{
 							window.alert(actionDataString);
