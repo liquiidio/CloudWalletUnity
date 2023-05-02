@@ -599,12 +599,12 @@ using Universal.UniversalSDK;
 #endif
         }
 
-        public void InitializeDesktop(uint localPort, string cloudWalletSigningWebsiteUrl, bool hostLocalWebsite = true, string indexHtmlDataPath = null, string waxJsDataPath = null)
+        public void InitializeDesktop(uint localPort, string CloudWalletSigningWebsiteUrl, bool hostLocalWebsite = true, string indexHtmlDataPath = null, string waxJsDataPath = null)
         {
 #if UNITY_IOS || UNITY_ANDROID || UNTIY_STANDALONE || UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX || UNITY_STANDALONE_OSX
             try
             {
-                if (cloudWalletSigningWebsiteUrl.StartsWith("https"))
+                if (CloudWalletSigningWebsiteUrl.StartsWith("https"))
                     throw new NotSupportedException("CloudWalletSigningWebsiteUrl can't be SSL encrypted");
 
                 if (hostLocalWebsite)
@@ -623,7 +623,7 @@ using Universal.UniversalSDK;
                 Debug.LogError(e);
             }
             _localUrl = $"http://127.0.0.1:{localPort}/";
-            _remoteUrl = hostLocalWebsite == false ? cloudWalletSigningWebsiteUrl : $"http://127.0.0.1:{localPort}/index.html";
+            _remoteUrl = hostLocalWebsite == false ? CloudWalletSigningWebsiteUrl : $"http://127.0.0.1:{localPort}/index.html";
 #endif
         }
 
@@ -764,7 +764,7 @@ using Universal.UniversalSDK;
                 _remoteUrl = _remoteUrl[..^1];
 
             json ??= "";
-            return $"{_remoteUrl}#{hashpath}{json}";
+            return Uri.EscapeUriString($"{_remoteUrl}#{hashpath}{json}");
         }
 
         private void StartHttpListener()
