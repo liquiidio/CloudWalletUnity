@@ -85,7 +85,7 @@ using UnityEngine;
         // transfer tokens using a session  
         public void Transfer(EosSharp.Core.Api.v1.Action action)
         {
-            _cloudWalletPlugin.Sign(new[] { action });
+            _cloudWalletPlugin.Sign(new[] { action }, false, 60, 200);
         }
 
         // ask the user to sign the transaction and then broadcast to chain

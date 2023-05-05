@@ -98,20 +98,19 @@
 				try {
 					var preflightResult = await localPreflight();
 					if(preflightResult.ok){
-						const actionDataString = hash.substring(5).replaceAll('%22','"').replaceAll('%20',' ').replaceAll('%7B','{').replaceAll('%7D','}').replaceAll('%5B','[').replaceAll('%5D',']');
+						const actionConfigString = hash.substring(5).replaceAll('%22','"').replaceAll('%20',' ').replaceAll('%7B','{').replaceAll('%7D','}').replaceAll('%5B','[').replaceAll('%5D',']');
 						if(debug)
 						{
-							window.alert(actionDataString);
-							console.log(actionDataString);
+							window.alert(actionConfigString);
+							console.log(actionConfigString);
 						}
-						const actionDataJson = JSON.parse(actionDataString);
-						const result = await wax.api.transact({
-							actions: actionDataJson
-						}, 
-						{
-							blocksBehind: 3,
-							expireSeconds: 30
-						});
+						const actionConfigJson = JSON.parse(actionConfigString);
+						const result = await wax.api.transact(
+							{
+								actions: actionConfigJson.actions
+							},
+							actionConfigJson.config
+						);
 						await localCallback(JSON.stringify({ sign_result: result}), "onsigned");
 					}
 					else{

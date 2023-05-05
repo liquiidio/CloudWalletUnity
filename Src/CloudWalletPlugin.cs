@@ -23,6 +23,30 @@ namespace Assets.Packages.CloudWalletUnity.Src
 using Universal.UniversalSDK;
 #endif
 
+    public class ActionConfigWrapper
+    {
+        [JsonProperty("actions")]
+        public Action[] Actions;
+
+        [JsonProperty("config")]
+        public SignTransactionConfig Config;
+    }
+
+    public class SignTransactionConfig
+    {
+        /** If the transaction should also be broadcast */
+        [JsonProperty("broadcast")] 
+        public bool Broadcast;
+
+        /** Number of blocks behind */
+        [JsonProperty("blocksBehind")] 
+        public uint BlocksBehind;
+
+        /** Number of seconds before expiration */
+        [JsonProperty("expireSeconds")] 
+        public uint ExpireSeconds;
+    }
+
     [Preserve]
     public class CloudWalletErrorEvent
     {
@@ -230,7 +254,7 @@ using Universal.UniversalSDK;
     private static extern void CloudWalletLogin();
 
     [DllImport("__Internal")]
-    private static extern void CloudWalletSign(string actionDataJsonString);
+    private static extern void CloudWalletSign(string actionConfigJsonString);
 
     [DllImport("__Internal")]
     private static extern void CloudWalletCreateInfo();
@@ -285,7 +309,7 @@ using Universal.UniversalSDK;
         DispatchEventQueue();
     }
 
-    public void Sign(Action[] actions)
+    public void Sign(Action[] actions, bool broadcast = true, uint blocksBehind = 3, uint expireSeconds = 60)
     {
         if (!_instance._isInitialized)
         {
@@ -310,16 +334,30 @@ using Universal.UniversalSDK;
                 }
             };
 
-            var placeholderDict1 = ToDictionary<object>(action.data);
-            var placeholderDict2 = placeholderDict1.ToDictionary(keyValuePair => keyValuePair.Key,
-                keyValuePair => keyValuePair.Value is string and PlaceholderName ? _account : keyValuePair.Value);
+            if(action.data is IDictionary)
+            {
+                var placeholderDict1 = ToDictionary<object>(action.data);
+                var placeholderDict2 = placeholderDict1.ToDictionary(keyValuePair => keyValuePair.Key,
+                    keyValuePair => keyValuePair.Value is string and PlaceholderName ? _account : keyValuePair.Value);
 
-            var dataObj = JsonConvert.DeserializeObject<object>(JsonConvert.SerializeObject(placeholderDict2));
+                var dataObj = JsonConvert.DeserializeObject<object>(JsonConvert.SerializeObject(placeholderDict2));
+            }
+
             action.data = dataObj;
         }
 
         // TODO, [JsonIgnore] hex_data in EosSharp.Core.Action
-        CloudWalletSign(JsonConvert.SerializeObject(actions));
+        CloudWalletSign(JsonConvert.SerializeObject(new ActionConfigWrapper()
+        {
+            Actions = actions,
+                Config = new SignTransactionConfig()
+                {
+                    Broadcast =  broadcast,
+                    BlocksBehind = blocksBehind,
+                    ExpireSeconds = expireSeconds
+                }
+
+        }));
     }
 
     public void Login()
@@ -713,7 +751,7 @@ using Universal.UniversalSDK;
         private byte[] _indexHtmlBinary;
         private byte[] _waxjsBinary;
 
-        public void Sign(Action[] actions)
+        public void Sign(Action[] actions, bool broadcast = true, uint blocksBehind = 3, uint expireSeconds = 60)
         {
             if (!_isLoggedIn)
             {
@@ -732,15 +770,27 @@ using Universal.UniversalSDK;
                     }
                 };
 
-                var placeholderDict1 = ToDictionary<object>(action.data);
-                var placeholderDict2 = placeholderDict1.ToDictionary(keyValuePair => keyValuePair.Key,
-                    keyValuePair => keyValuePair.Value is string and PlaceholderName ? _account : keyValuePair.Value);
+                if (action.data is IDictionary)
+                {
+                    var placeholderDict1 = ToDictionary<object>(action.data);
+                    var placeholderDict2 = placeholderDict1.ToDictionary(keyValuePair => keyValuePair.Key,
+                        keyValuePair => keyValuePair.Value is string and PlaceholderName ? _account : keyValuePair.Value);
 
-                var dataObj = JsonConvert.DeserializeObject<object>(JsonConvert.SerializeObject(placeholderDict2));
-                action.data = dataObj;
+                    var dataObj = JsonConvert.DeserializeObject<object>(JsonConvert.SerializeObject(placeholderDict2));
+                    action.data = dataObj;
+                }
             }
 
-            StartBrowserCommunication(BuildUrl("sign", JsonConvert.SerializeObject(actions)));
+            StartBrowserCommunication(BuildUrl("sign", JsonConvert.SerializeObject(new ActionConfigWrapper()
+            {
+                Actions = actions,
+                Config = new SignTransactionConfig()
+                {
+                    Broadcast =  broadcast,
+                    BlocksBehind = blocksBehind,
+                    ExpireSeconds = expireSeconds
+                }
+            })));
         }
 
         public void Login()

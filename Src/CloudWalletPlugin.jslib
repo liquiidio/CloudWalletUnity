@@ -158,10 +158,10 @@ var CloudWalletUnityWebGlPlugin =  {
         }
     },
 
-    CloudWalletSign: async function (actionDataJsonString) {
+    CloudWalletSign: async function (actionConfigJsonString) {
         if(waxCloudWalletWebglState.Debug){
             console.log("Sign called");        
-            console.log(UTF8ToString(actionDataJsonString));
+            console.log(UTF8ToString(actionConfigJsonString));
         }
 
         var msg = "";
@@ -173,15 +173,14 @@ var CloudWalletUnityWebGlPlugin =  {
         }
 
         if(!error){
-            const actionDataJson = JSON.parse(UTF8ToString(actionDataJsonString));
+            const actionConfigJson = JSON.parse(UTF8ToString(actionConfigJsonString));
             try {
-                const result = await waxCloudWalletWebglState.wax.api.transact({
-                    actions: actionDataJson
-                }, 
-                {
-                    blocksBehind: 3,
-                    expireSeconds: 30
-                });
+                const result = await waxCloudWalletWebglState.wax.api.transact(
+					{
+						actions: actionConfigJson.actions
+					}, 
+					actionConfigJson.config
+				);
 
                 var msg = JSON.stringify({ result: result });
 			    var length = lengthBytesUTF8(msg) + 1;
