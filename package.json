@@ -1,6 +1,6 @@
 {
   "name": "io.liquiid.wcwunitywebgl",
-  "version": "1.0.0",
+  "version": "1.2.5",
   "displayName": "Wax Cloud Wallet WebGL",
   "description": "Package allowing to integrate and use Wax Cloud Wallet (https://all-access.wax.io/) within Unity WebGl builds",
   "unity": "2019.1",
