@@ -70,7 +70,7 @@ using UnityEngine;
 
 #if UNITY_WEBGL
             _cloudWalletPlugin.InitializeWebGl("https://wax.greymass.com");
-#elif UNTIY_ANDROID || UNITY_IOS
+#elif UNITY_ANDROID || UNITY_IOS
             _cloudWalletPlugin.InitializeMobile(1234, "http://127.0.0.1:1234/index.html", true, indexHtmlString, waxJsString);
 #else
         _cloudWalletPlugin.InitializeDesktop(1234, "http://127.0.0.1:1234/index.html");
