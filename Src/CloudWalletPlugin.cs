@@ -341,9 +341,8 @@ using Universal.UniversalSDK;
                     keyValuePair => keyValuePair.Value is string and PlaceholderName ? _account : keyValuePair.Value);
 
                 var dataObj = JsonConvert.DeserializeObject<object>(JsonConvert.SerializeObject(placeholderDict2));
+                action.data = dataObj;
             }
-
-            action.data = dataObj;
         }
 
         // TODO, [JsonIgnore] hex_data in EosSharp.Core.Action
