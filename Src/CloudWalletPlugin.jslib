@@ -182,7 +182,7 @@ var CloudWalletUnityWebGlPlugin =  {
 					actionConfigJson.config
 				);
 
-                var msg = JSON.stringify({ result: result });
+                var msg = JSON.stringify({ sign_result: result });
 			    var length = lengthBytesUTF8(msg) + 1;
 			    var buffer = _malloc(length);
 			    stringToUTF8(msg, buffer, length);
@@ -227,7 +227,7 @@ var CloudWalletUnityWebGlPlugin =  {
         if(waxCloudWalletWebglState.wax.isTemp){
            try {
                 const result = await waxCloudWalletWebglState.wax.createInfo();
-                msg = JSON.stringify({ createInfoResult: result });
+                msg = JSON.stringify( result );
             } catch(e) {
                 if(waxCloudWalletWebglState.Debug){
                     console.log(e.message);
@@ -265,7 +265,7 @@ var CloudWalletUnityWebGlPlugin =  {
 
         try {
             const result = await waxCloudWalletWebglState.wax.logout();
-            msg = JSON.stringify({ logoutResult: result });
+            msg = JSON.stringify({ logout_result: result });
         } catch(e) {
             if(waxCloudWalletWebglState.Debug){
                 console.log(e.message);
@@ -301,7 +301,7 @@ var CloudWalletUnityWebGlPlugin =  {
 
         try {
             const result = await waxCloudWalletWebglState.wax.waxProof(nonceString, verify);
-            msg = JSON.stringify({ waxProofResult: result });
+            msg = JSON.stringify({ wax_proof_result: result });
         } catch(e) {
             if(waxCloudWalletWebglState.Debug){
                 console.log(e.message);
@@ -335,7 +335,7 @@ var CloudWalletUnityWebGlPlugin =  {
 
         try {
             const result = await waxCloudWalletWebglState.wax.userAccountProof(nonce, description, verify);
-            msg = JSON.stringify({ userAccountProofResult: result });
+            msg = JSON.stringify({ user_account_proof_result: result });
         } catch(e) {
             if(waxCloudWalletWebglState.Debug){
                 console.log(e.message);
